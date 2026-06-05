@@ -1,6 +1,6 @@
-// import {
-//   "python123/moontrustflow" @lib,
-// }
+import {
+  "python123/moontrustflow" @trustflow,
+}
 
 options(
   "is-main": true,
