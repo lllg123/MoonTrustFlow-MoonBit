@@ -1,0 +1,76 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "python123/moontrustflow"
+
+// Values
+pub fn analyze(Model) -> Array[Finding]
+
+pub fn empty_model() -> Model
+
+pub fn format_error(TrustFlowError) -> String
+
+pub fn format_finding(Finding) -> String
+
+pub fn format_report(Array[Finding]) -> String
+
+pub fn node_kind_name(NodeKind) -> String
+
+pub fn parse_model(String) -> Result[Model, TrustFlowError]
+
+// Errors
+
+// Types and methods
+pub(all) struct Edge {
+  from : String
+  to : String
+  label : String
+} derive(Eq)
+
+pub(all) struct Finding {
+  severity : String
+  source : String
+  sink : String
+  path : Array[String]
+  message : String
+} derive(Eq)
+
+pub(all) struct Model {
+  nodes : Array[Node]
+  edges : Array[Edge]
+  policies : Array[Policy]
+} derive(Eq)
+
+pub(all) struct Node {
+  name : String
+  kind : NodeKind
+  description : String
+} derive(Eq)
+
+pub(all) enum NodeKind {
+  Source
+  Sink
+  Sanitizer
+  Normal
+} derive(Eq)
+
+pub(all) struct Policy {
+  path : Array[String]
+} derive(Eq)
+
+pub(all) struct Position {
+  line : Int
+  column : Int
+} derive(Eq)
+
+pub(all) enum TrustFlowError {
+  UnknownDirective(Position, String)
+  MissingNodeName(Position)
+  DuplicateNode(Position, String)
+  MissingArrow(Position)
+  MissingPathNode(Position)
+  UnterminatedQuote(Position)
+} derive(Eq)
+
+// Type aliases
+
+// Traits
+
