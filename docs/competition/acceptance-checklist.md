@@ -6,7 +6,7 @@
 - [x] README.md 是普通文件，不使用 symlink。
 - [x] 仓库包含许可证、源码、测试、CLI 和文档。
 - [ ] GitLink 仓库创建为 `python123/moontrustflow`。
-- [ ] GitLink 仓库包含 10 次以上有效提交。
+- [x] 本地仓库包含 10 次以上有效提交。
 
 ## 功能要求
 
@@ -23,10 +23,10 @@
 
 - [x] `moon test`
 - [x] `moon run cmd/main`
-- [ ] `moon info`
-- [ ] `moon fmt --check`
-- [ ] `rg -i "mooncsv|moonloglens|csv_parser|csv"` 无旧项目残留。
-- [ ] `git ls-files -s README.md` 显示 `100644`。
+- [x] `moon info`
+- [x] `moon fmt --check`
+- [x] 旧项目名称和被驳回选题关键词无残留。
+- [x] `git ls-files -s README.md` 显示 `100644`。
 
 ## 后续扩展
 
