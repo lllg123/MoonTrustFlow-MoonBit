@@ -2,7 +2,8 @@
 fn model_ok(input : String) -> @moontrustflow.Model {
   match @moontrustflow.parse_model(input) {
     Ok(model) => model
-    Err(err) => abort("unexpected model error: " + @moontrustflow.format_error(err))
+    Err(err) =>
+      abort("unexpected model error: " + @moontrustflow.format_error(err))
   }
 }
 
@@ -52,9 +53,10 @@ test "reports syntax errors with line and column" {
 
 ///|
 test "reports duplicate node" {
-  match @moontrustflow.parse_model(
-    "source user_input \"request\"\nsource user_input \"duplicate\"",
-  ) {
+  match
+    @moontrustflow.parse_model(
+      "source user_input \"request\"\nsource user_input \"duplicate\"",
+    ) {
     Err(err) =>
       assert_eq(
         @moontrustflow.format_error(err),
@@ -126,7 +128,6 @@ test "format report is stable" {
   )
   let report = @moontrustflow.format_report(@moontrustflow.analyze(model))
   assert_eq(
-    report,
-    "findings=1\n[high] user_input -> render_html | path=user_input -> render_html | unsanitized flow reaches dangerous sink",
+    report, "findings=1\n[high] user_input -> render_html | path=user_input -> render_html | unsanitized flow reaches dangerous sink",
   )
 }

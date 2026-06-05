@@ -19,6 +19,12 @@ repository = "https://gitlink.org.cn/python123/moontrustflow"
 
 license = "Apache-2.0"
 
-keywords = [ "security", "taint-analysis", "data-flow", "static-analysis", "contest" ]
+keywords = [
+  "security",
+  "taint-analysis",
+  "data-flow",
+  "static-analysis",
+  "contest",
+]
 
 description = "A lightweight MoonBit data-flow security analysis framework with a compact rule language and explainable taint paths."

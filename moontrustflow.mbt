@@ -81,8 +81,7 @@ pub fn format_error(err : TrustFlowError) -> String {
       "line \{pos.line}, column \{pos.column}: missing node name"
     DuplicateNode(pos, name) =>
       "line \{pos.line}, column \{pos.column}: duplicate node \{name}"
-    MissingArrow(pos) =>
-      "line \{pos.line}, column \{pos.column}: missing arrow"
+    MissingArrow(pos) => "line \{pos.line}, column \{pos.column}: missing arrow"
     MissingPathNode(pos) =>
       "line \{pos.line}, column \{pos.column}: missing path node"
     UnterminatedQuote(pos) =>
@@ -184,15 +183,13 @@ fn visit(
   }
   if path.length() > 1 && is_sink(model, current) {
     if !is_allowed(model, path) {
-      findings.push(
-        {
-          severity: "high",
-          source,
-          sink: current,
-          path: path.copy(),
-          message: "unsanitized flow reaches dangerous sink",
-        },
-      )
+      findings.push({
+        severity: "high",
+        source,
+        sink: current,
+        path: path.copy(),
+        message: "unsanitized flow reaches dangerous sink",
+      })
     }
     return
   }
@@ -280,11 +277,15 @@ fn parse_node(
   model : Model,
 ) -> Result[Unit, TrustFlowError] {
   if tokens.length() < 2 {
-    return Err(MissingNodeName({ line: line_number, column: tokens[0].length() + 1 }))
+    return Err(
+      MissingNodeName({ line: line_number, column: tokens[0].length() + 1 }),
+    )
   }
   let name = tokens[1]
   if has_node(model, name) {
-    return Err(DuplicateNode({ line: line_number, column: tokens[0].length() + 2 }, name))
+    return Err(
+      DuplicateNode({ line: line_number, column: tokens[0].length() + 2 }, name),
+    )
   }
   let description = if tokens.length() >= 3 { tokens[2] } else { "" }
   model.nodes.push({ name, kind, description })
@@ -344,7 +345,10 @@ fn parse_allow(
 }
 
 ///|
-fn tokenize(text : String, line_number : Int) -> Result[Array[String], TrustFlowError] {
+fn tokenize(
+  text : String,
+  line_number : Int,
+) -> Result[Array[String], TrustFlowError] {
   let chars = text.iter().to_array()
   let tokens : Array[String] = []
   let mut i = 0

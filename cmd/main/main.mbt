@@ -1,3 +1,4 @@
+///|
 fn main {
   let sample = "source user_input \"external request body\"\n" +
     "sanitizer escape_html \"html escaping\"\n" +
@@ -12,7 +13,9 @@ fn main {
     Ok(model) => {
       let findings = @trustflow.analyze(model)
       println("MoonTrustFlow demo")
-      println("nodes=\{model.nodes.length()}, edges=\{model.edges.length()}, findings=\{findings.length()}")
+      println(
+        "nodes=\{model.nodes.length()}, edges=\{model.edges.length()}, findings=\{findings.length()}",
+      )
       println(@trustflow.format_report(findings))
     }
     Err(err) => println("model error: " + @trustflow.format_error(err))
