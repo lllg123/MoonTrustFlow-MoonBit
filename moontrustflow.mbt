@@ -91,6 +91,33 @@ pub fn format_error(err : TrustFlowError) -> String {
 }
 
 ///|
+pub fn analyze(model : Model) -> Array[Finding] {
+  let findings : Array[Finding] = []
+  for node in model.nodes {
+    if node.kind == Source {
+      visit(model, node.name, node.name, [node.name], findings)
+    }
+  }
+  findings
+}
+
+///|
+pub fn format_finding(finding : Finding) -> String {
+  "[\{finding.severity}] \{finding.source} -> \{finding.sink} | path=\{finding.path.join(" -> ")} | \{finding.message}"
+}
+
+///|
+pub fn format_report(findings : Array[Finding]) -> String {
+  let out = StringBuilder()
+  out.write_string("findings=\{findings.length()}")
+  for finding in findings {
+    out.write_char('\n')
+    out.write_string(format_finding(finding))
+  }
+  out.to_string()
+}
+
+///|
 pub fn parse_model(input : String) -> Result[Model, TrustFlowError] {
   let model = empty_model()
   let line = StringBuilder()
@@ -145,6 +172,76 @@ fn is_sanitizer(model : Model, name : String) -> Bool {
 }
 
 ///|
+fn visit(
+  model : Model,
+  source : String,
+  current : String,
+  path : Array[String],
+  findings : Array[Finding],
+) -> Unit {
+  if path.length() > model.nodes.length() + model.edges.length() {
+    return
+  }
+  if path.length() > 1 && is_sink(model, current) {
+    if !is_allowed(model, path) {
+      findings.push(
+        {
+          severity: "high",
+          source,
+          sink: current,
+          path: path.copy(),
+          message: "unsanitized flow reaches dangerous sink",
+        },
+      )
+    }
+    return
+  }
+  if path.length() > 1 && is_sanitizer(model, current) {
+    return
+  }
+  for edge in model.edges {
+    if edge.from == current && !path_contains(path, edge.to) {
+      let next_path = path.copy()
+      next_path.push(edge.to)
+      visit(model, source, edge.to, next_path, findings)
+    }
+  }
+}
+
+///|
+fn is_allowed(model : Model, path : Array[String]) -> Bool {
+  for policy in model.policies {
+    if same_path(policy.path, path) {
+      return true
+    }
+  }
+  false
+}
+
+///|
+fn same_path(left : Array[String], right : Array[String]) -> Bool {
+  if left.length() != right.length() {
+    return false
+  }
+  for i in 0..<left.length() {
+    if left[i] != right[i] {
+      return false
+    }
+  }
+  true
+}
+
+///|
+fn path_contains(path : Array[String], name : String) -> Bool {
+  for node in path {
+    if node == name {
+      return true
+    }
+  }
+  false
+}
+
+///|
 fn parse_line(
   text : String,
   line_number : Int,
@@ -183,7 +280,7 @@ fn parse_node(
   model : Model,
 ) -> Result[Unit, TrustFlowError] {
   if tokens.length() < 2 {
-    return Err(MissingNodeName({ line: line_number, column: tokens[0].length() + 2 }))
+    return Err(MissingNodeName({ line: line_number, column: tokens[0].length() + 1 }))
   }
   let name = tokens[1]
   if has_node(model, name) {
