@@ -8,19 +8,38 @@ fn model_ok(input : String) -> @moontrustflow.Model {
 }
 
 ///|
-test "parse nodes edges and allow rules" {
+test "parse boundary nodes and allow rules" {
   let model = model_ok(
-    "source user_input \"external request body\"\n" +
-    "sanitizer escape_html \"html escaping\"\n" +
-    "sink render_html \"html response renderer\"\n" +
-    "edge user_input -> escape_html \"sanitize\"\n" +
+    "source request_body \"external input\"\n" +
+    "boundary api_gateway \"trusted boundary\"\n" +
+    "sanitizer escape_html \"html encoding\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "edge request_body -> api_gateway \"ingress\"\n" +
+    "edge api_gateway -> escape_html \"encode\"\n" +
     "edge escape_html -> render_html \"safe render\"\n" +
-    "allow user_input -> escape_html -> render_html",
+    "allow request_body -> api_gateway -> escape_html -> render_html \"documented path\"",
   )
-  assert_eq(model.nodes.length(), 3)
-  assert_eq(model.edges.length(), 2)
+  assert_eq(model.nodes.length(), 4)
+  assert_eq(model.edges.length(), 3)
   assert_eq(model.policies.length(), 1)
-  assert_eq(@moontrustflow.node_kind_name(model.nodes[0].kind), "source")
+  assert_eq(@moontrustflow.node_kind_name(model.nodes[1].kind), "boundary")
+  assert_eq(@moontrustflow.rule_kind_name(model.policies[0].kind), "allow")
+}
+
+///|
+test "parse deny severity and require through policies" {
+  let model = model_ok(
+    "source request_body \"external input\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "deny request_body -> render_html severity=high \"raw render is forbidden\"\n" +
+    "require request_body -> render_html through=escape_html severity=medium \"html output must be encoded\"",
+  )
+  assert_eq(model.policies.length(), 2)
+  assert_eq(@moontrustflow.rule_kind_name(model.policies[0].kind), "deny")
+  assert_eq(model.policies[0].severity, "high")
+  assert_eq(@moontrustflow.rule_kind_name(model.policies[1].kind), "require")
+  assert_eq(model.policies[1].through, "escape_html")
+  assert_eq(model.policies[1].severity, "medium")
 }
 
 ///|
@@ -33,11 +52,11 @@ test "reports syntax errors with line and column" {
       )
     Ok(_) => abort("expected missing node name")
   }
-  match @moontrustflow.parse_model("edge user_input render_html") {
+  match @moontrustflow.parse_model("edge request_body render_html") {
     Err(err) =>
       assert_eq(
         @moontrustflow.format_error(err),
-        "line 1, column 17: missing arrow",
+        "line 1, column 19: missing arrow",
       )
     Ok(_) => abort("expected missing arrow")
   }
@@ -55,79 +74,93 @@ test "reports syntax errors with line and column" {
 test "reports duplicate node" {
   match
     @moontrustflow.parse_model(
-      "source user_input \"request\"\nsource user_input \"duplicate\"",
+      "source request_body \"request\"\nsource request_body \"duplicate\"",
     ) {
     Err(err) =>
       assert_eq(
         @moontrustflow.format_error(err),
-        "line 2, column 8: duplicate node user_input",
+        "line 2, column 8: duplicate node request_body",
       )
     Ok(_) => abort("expected duplicate node")
   }
 }
 
 ///|
-test "find direct source to sink risk" {
+test "deny policy reports matching direct path" {
   let model = model_ok(
-    "source user_input \"external request body\"\n" +
-    "sink render_html \"html response renderer\"\n" +
-    "edge user_input -> render_html \"direct render\"",
+    "source request_body \"external input\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "edge request_body -> render_html \"direct render\"\n" +
+    "deny request_body -> render_html severity=high \"raw input must not render directly\"",
   )
   let findings = @moontrustflow.analyze(model)
   assert_eq(findings.length(), 1)
-  assert_eq(findings[0].source, "user_input")
-  assert_eq(findings[0].sink, "render_html")
-  assert_eq(findings[0].path.join(" -> "), "user_input -> render_html")
+  assert_eq(findings[0].severity, "high")
+  assert_eq(findings[0].rule, "deny")
+  assert_eq(findings[0].path.join(" -> "), "request_body -> render_html")
 }
 
 ///|
-test "sanitizer stops taint propagation" {
+test "require policy reports paths that miss control point" {
   let model = model_ok(
-    "source user_input \"external request body\"\n" +
-    "sanitizer escape_html \"html escaping\"\n" +
-    "sink render_html \"html response renderer\"\n" +
-    "edge user_input -> escape_html \"sanitize\"\n" +
-    "edge escape_html -> render_html \"safe render\"",
+    "source request_body \"external input\"\n" +
+    "sanitizer escape_html \"html encoding\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "edge request_body -> render_html \"direct render\"\n" +
+    "edge request_body -> escape_html \"encode\"\n" +
+    "edge escape_html -> render_html \"safe render\"\n" +
+    "require request_body -> render_html through=escape_html severity=medium \"html output must be encoded\"",
   )
-  assert_eq(@moontrustflow.analyze(model).length(), 0)
+  let findings = @moontrustflow.analyze(model)
+  assert_eq(findings.length(), 1)
+  assert_eq(findings[0].rule, "require")
+  assert_eq(findings[0].path.join(" -> "), "request_body -> render_html")
 }
 
 ///|
 test "allow rule suppresses exact path" {
   let model = model_ok(
-    "source user_input \"external request body\"\n" +
-    "sink render_html \"html response renderer\"\n" +
-    "edge user_input -> render_html \"legacy accepted path\"\n" +
-    "allow user_input -> render_html",
+    "source request_body \"external input\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "edge request_body -> render_html \"legacy exception\"\n" +
+    "deny request_body -> render_html severity=high \"raw render is forbidden\"\n" +
+    "allow request_body -> render_html \"temporary exception\"",
   )
   assert_eq(@moontrustflow.analyze(model).length(), 0)
 }
 
 ///|
-test "reports multiple source to sink findings" {
+test "reports stable ordering for multiple policies" {
   let model = model_ok(
-    "source query_param \"url query\"\n" +
-    "source cookie_value \"cookie\"\n" +
-    "sink sql_exec \"database execution\"\n" +
-    "sink shell_exec \"shell execution\"\n" +
-    "edge query_param -> sql_exec \"dynamic query\"\n" +
-    "edge cookie_value -> shell_exec \"shell arg\"",
+    "source request_body \"external input\"\n" +
+    "boundary api_gateway \"trusted boundary\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "sink audit_log \"audit output\"\n" +
+    "edge request_body -> api_gateway \"ingress\"\n" +
+    "edge api_gateway -> render_html \"html response\"\n" +
+    "edge request_body -> audit_log \"audit event\"\n" +
+    "deny request_body -> render_html severity=high \"raw render is forbidden\"\n" +
+    "deny request_body -> audit_log severity=low \"audit path needs review\"",
   )
   let findings = @moontrustflow.analyze(model)
   assert_eq(findings.length(), 2)
-  assert_eq(findings[0].path.join(" -> "), "query_param -> sql_exec")
-  assert_eq(findings[1].path.join(" -> "), "cookie_value -> shell_exec")
+  assert_eq(
+    findings[0].path.join(" -> "),
+    "request_body -> api_gateway -> render_html",
+  )
+  assert_eq(findings[1].path.join(" -> "), "request_body -> audit_log")
 }
 
 ///|
 test "format report is stable" {
   let model = model_ok(
-    "source user_input \"external request body\"\n" +
-    "sink render_html \"html response renderer\"\n" +
-    "edge user_input -> render_html \"direct render\"",
+    "source request_body \"external input\"\n" +
+    "sink render_html \"html renderer\"\n" +
+    "edge request_body -> render_html \"direct render\"\n" +
+    "deny request_body -> render_html severity=high \"raw input must not render directly\"",
   )
   let report = @moontrustflow.format_report(@moontrustflow.analyze(model))
   assert_eq(
-    report, "findings=1\n[high] user_input -> render_html | path=user_input -> render_html | unsanitized flow reaches dangerous sink",
+    report, "findings=1\n[high] deny violated: request_body -> render_html | raw input must not render directly | suggestion=review or allow this path explicitly",
   )
 }

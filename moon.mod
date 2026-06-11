@@ -15,16 +15,17 @@ version = "0.1.0"
 
 readme = "README.md"
 
-repository = "https://gitlink.org.cn/python123/moontrustflow"
+repository = "https://www.gitlink.org.cn/lllglllg/MoonTrustFlow"
 
 license = "Apache-2.0"
 
 keywords = [
   "security",
-  "taint-analysis",
-  "data-flow",
-  "static-analysis",
+  "policy-as-code",
+  "governance",
+  "trust-boundary",
+  "compliance",
   "contest",
 ]
 
-description = "A lightweight MoonBit data-flow security analysis framework with a compact rule language and explainable taint paths."
+description = "A lightweight MoonBit Policy-as-Code toolkit for trusted flow governance, boundary rules, and explainable compliance reports."

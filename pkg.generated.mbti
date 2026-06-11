@@ -16,6 +16,8 @@ pub fn node_kind_name(NodeKind) -> String
 
 pub fn parse_model(String) -> Result[Model, TrustFlowError]
 
+pub fn rule_kind_name(RuleKind) -> String
+
 // Errors
 
 // Types and methods
@@ -27,10 +29,12 @@ pub(all) struct Edge {
 
 pub(all) struct Finding {
   severity : String
+  rule : String
   source : String
   sink : String
   path : Array[String]
   message : String
+  suggestion : String
 } derive(Eq)
 
 pub(all) struct Model {
@@ -49,16 +53,27 @@ pub(all) enum NodeKind {
   Source
   Sink
   Sanitizer
+  Boundary
   Normal
 } derive(Eq)
 
 pub(all) struct Policy {
+  kind : RuleKind
   path : Array[String]
+  through : String
+  severity : String
+  description : String
 } derive(Eq)
 
 pub(all) struct Position {
   line : Int
   column : Int
+} derive(Eq)
+
+pub(all) enum RuleKind {
+  Allow
+  Deny
+  Require
 } derive(Eq)
 
 pub(all) enum TrustFlowError {
@@ -67,6 +82,7 @@ pub(all) enum TrustFlowError {
   DuplicateNode(Position, String)
   MissingArrow(Position)
   MissingPathNode(Position)
+  MissingThrough(Position)
   UnterminatedQuote(Position)
 } derive(Eq)
 
