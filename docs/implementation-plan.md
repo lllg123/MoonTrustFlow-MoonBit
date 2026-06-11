@@ -1,20 +1,33 @@
 # MoonTrustFlow Implementation Plan
 
-## Steps
+## Current Scope
 
-1. Scaffold a clean MoonBit module under `python123/moontrustflow`.
-2. Write blackbox tests for parser, diagnostics, analysis, policies, and report
-   formatting.
-3. Implement the domain model and parser.
-4. Implement taint propagation and finding formatting.
-5. Add CLI demo.
-6. Add README, competition docs, application PDF/DOCX, and CI.
-7. Run final verification and commit at least 10 meaningful commits.
+MoonTrustFlow v1 is implemented as a MoonBit library plus a small CLI demo. The
+core scope is a policy model evaluator rather than a source-code parser.
+
+Implemented components:
+
+1. `.mtf` line parser with quoted text and diagnostics.
+2. Domain model for nodes, edges, policies, models, and findings.
+3. Policy evaluation for `deny`, `require`, and `allow`.
+4. CLI demonstration under `cmd/main`.
+5. Blackbox tests for parser behavior, policy evaluation, and report output.
+6. Competition documents and CI workflow.
+
+## Design Choices
+
+- The parser is dependency-free to keep the package easy to build.
+- Policy evaluation is deterministic so CI output is stable.
+- `allow` uses exact path matching to avoid accidentally hiding broad risks.
+- The project keeps a clear adapter boundary for future AST, call-graph, or
+  architecture extraction inputs.
 
 ## Acceptance
 
 - `moon test` passes.
-- `moon run cmd/main` prints a deterministic demo.
-- README is a normal file.
-- No residue from previous rejected projects remains.
-- Git history has at least 10 commits before submission.
+- `moon run cmd/main` prints a deterministic policy-evaluation demo.
+- `README.md` is a normal tracked file.
+- Competition materials use the GitLink and GitHub repositories supplied for
+  submission.
+- Git history remains in the 10-20 effective commit range required by the
+  organizer.

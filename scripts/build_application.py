@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
@@ -15,34 +16,46 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "competition"
 TITLE = "MoonTrustFlow 项目申报书"
-PROJECT = "MoonTrustFlow：MoonBit 轻量级数据流安全分析与污染传播检测框架"
+PROJECT = "MoonTrustFlow：MoonBit Policy-as-Code 与可信数据流治理工具包"
+GITLINK = "https://www.gitlink.org.cn/lllglllg/MoonTrustFlow"
+GITHUB = "https://github.com/lllg123/MoonTrustFlow-MoonBit-"
 PDF = OUT / "MoonTrustFlow项目申报书.pdf"
 DOCX = OUT / "MoonTrustFlow项目申报书.docx"
 
 SECTIONS = [
     (
-        "一、项目简介",
-        "MoonTrustFlow 是一个面向 MoonBit 生态的软件分析基础库。项目通过小型 .mtf 规则语言描述敏感源、危险汇点、净化器、数据流边和允许路径，并在 MoonBit 中实现污染传播分析，输出可解释的 source-to-sink 风险路径。",
+        "1. 项目名称",
+        PROJECT,
     ),
     (
-        "二、项目方向与适用场景",
-        "项目贴合软件分析框架、工程工具和基础软件生态补位方向。适用场景包括服务端输入到危险操作的数据流建模、AI 生成代码安全审查、CI 架构安全约束检查、可信工具链实验以及后续 MoonBit AST 分析器建设。",
+        "2. 项目简介",
+        "MoonTrustFlow 是面向 MoonBit 生态的轻量策略评估工具包。项目使用 .mtf "
+        "规则描述数据源、危险汇点、可信边界、净化控制点、数据流边、禁止路径、"
+        "必经控制点和例外策略，并输出可解释的合规/风险报告。",
     ),
     (
-        "三、核心功能",
-        "项目支持 source、sink、sanitizer、node、edge、allow 等声明，能够构建有向数据流图，从 source 出发传播污染标记，在 sanitizer 处截断传播，在 sink 处生成完整风险路径，并用 allow 规则压制已知安全链路。",
+        "3. 项目方向与适用场景",
+        "方向为工程工具、策略评估和基础软件生态补位。适用于服务边界治理、"
+        "CI 审计、架构评审、数据流控制点检查，以及后续接入 MoonBit AST 或调用图的工具链。",
     ),
     (
-        "四、原创性说明",
-        "本项目为原创项目，不移植已有开源项目。项目选择规则模型与污染传播分析作为切入点，避开常见格式解析器、日志处理库和发布工具等容易重合的方向。核心规则语言、数据结构、分析算法、诊断信息和报告格式均围绕 MoonBit 生态重新设计。",
+        "4. 拟实现的核心功能",
+        "解析 .mtf 模型；支持 source/sink/sanitizer/boundary/node/edge；支持 deny、"
+        "require through=、allow；支持 severity 风险等级；按图路径评估策略并生成稳定报告。",
     ),
     (
-        "五、技术路线",
-        "首版采用行级 .mtf 解析器，将每一行转换为节点、边或策略。分析阶段使用图遍历从敏感源出发记录访问路径；当路径到达危险汇点时生成 finding；当路径到达净化器时停止当前分支；当路径被 allow 规则精确匹配时不报告。",
+        "5. 原创性说明",
+        "本项目为原创项目，不移植已有开源项目。选题避开通用数据流分析框架、"
+        "依赖风险扫描和 CI 工作流检查，聚焦策略规则、可信流模型与合规报告的组合。",
     ),
     (
-        "六、预期成果",
-        "项目交付一个可运行、可测试、可复现的 MoonBit 软件分析基础库，包含核心库、CLI 演示、测试集、README、CI、设计文档和申报材料。后续可扩展真实文件读取、风险等级配置、MoonBit AST 适配和 HTML/JSON 报告。",
+        "6. 仓库链接",
+        f"GitHub：{GITHUB}<br/>GitLink：{GITLINK}",
+    ),
+    (
+        "7. 提交说明",
+        "仓库保留 10-20 次有效提交，提交内容覆盖项目骨架、领域模型、解析器、"
+        "策略评估、CLI、测试、CI 和申报文档，不使用空提交或重复提交凑数。",
     ),
 ]
 
@@ -66,65 +79,70 @@ def build_pdf() -> None:
         "title",
         parent=styles["Title"],
         fontName=font,
-        fontSize=22,
-        leading=30,
+        fontSize=18,
+        leading=24,
         alignment=TA_CENTER,
-        spaceAfter=18,
+        spaceAfter=8,
     )
     heading = ParagraphStyle(
         "heading",
         parent=styles["Heading2"],
         fontName=font,
-        fontSize=13,
-        leading=18,
+        fontSize=10.5,
+        leading=14,
         textColor=colors.HexColor("#1f3b73"),
-        spaceBefore=8,
-        spaceAfter=4,
+        spaceBefore=4,
+        spaceAfter=2,
     )
     body = ParagraphStyle(
         "body",
         parent=styles["BodyText"],
         fontName=font,
-        fontSize=10.5,
-        leading=17,
-        firstLineIndent=21,
-        spaceAfter=4,
+        fontSize=8.8,
+        leading=12.5,
+        spaceAfter=2,
     )
-    meta = ParagraphStyle("meta", parent=styles["BodyText"], fontName=font, fontSize=10.5, leading=16)
+    meta = ParagraphStyle(
+        "meta",
+        parent=styles["BodyText"],
+        fontName=font,
+        fontSize=8.8,
+        leading=12,
+    )
     doc = SimpleDocTemplate(
         str(PDF),
         pagesize=A4,
-        rightMargin=2 * cm,
-        leftMargin=2 * cm,
-        topMargin=1.8 * cm,
-        bottomMargin=1.8 * cm,
+        rightMargin=1.45 * cm,
+        leftMargin=1.45 * cm,
+        topMargin=1.3 * cm,
+        bottomMargin=1.25 * cm,
         title=TITLE,
     )
     story = [Paragraph(TITLE, title)]
     table = Table(
         [
-            [Paragraph("项目名称", meta), Paragraph(PROJECT, meta)],
-            [Paragraph("参赛方向", meta), Paragraph("MoonBit 国产基础软件开源生态项目", meta)],
-            [Paragraph("开源许可证", meta), Paragraph("Apache-2.0", meta)],
-            [Paragraph("仓库链接", meta), Paragraph("https://gitlink.org.cn/python123/moontrustflow", meta)],
+            [Paragraph("项目", meta), Paragraph(PROJECT, meta)],
+            [Paragraph("方向", meta), Paragraph("Policy-as-Code / 可信数据流治理 / 工程工具", meta)],
+            [Paragraph("许可证", meta), Paragraph("Apache-2.0", meta)],
+            [Paragraph("仓库", meta), Paragraph(f"GitHub：{GITHUB}<br/>GitLink：{GITLINK}", meta)],
         ],
-        colWidths=[3.2 * cm, 12 * cm],
+        colWidths=[2.3 * cm, 15.2 * cm],
     )
     table.setStyle(
         TableStyle(
             [
                 ("FONTNAME", (0, 0), (-1, -1), font),
                 ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#edf3ff")),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#9aa9c7")),
+                ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa9c7")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
             ]
         )
     )
-    story.extend([table, Spacer(1, 0.35 * cm)])
+    story.extend([table, Spacer(1, 0.16 * cm)])
     for section_title, text in SECTIONS:
         story.append(Paragraph(section_title, heading))
         story.append(Paragraph(text, body))
@@ -133,24 +151,40 @@ def build_pdf() -> None:
 
 def build_docx() -> None:
     doc = Document()
+    section = doc.sections[0]
+    section.top_margin = Pt(42)
+    section.bottom_margin = Pt(42)
+    section.left_margin = Pt(54)
+    section.right_margin = Pt(54)
     doc.styles["Normal"].font.name = "Microsoft YaHei"
-    doc.styles["Normal"].font.size = Pt(10.5)
-    title = doc.add_heading(TITLE, level=0)
-    title.alignment = 1
+    doc.styles["Normal"].font.size = Pt(10)
+
+    title = doc.add_paragraph()
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = title.add_run(TITLE)
+    run.bold = True
+    run.font.size = Pt(18)
+
     table = doc.add_table(rows=4, cols=2)
     table.style = "Table Grid"
     rows = [
-        ("项目名称", PROJECT),
-        ("参赛方向", "MoonBit 国产基础软件开源生态项目"),
-        ("开源许可证", "Apache-2.0"),
-        ("仓库链接", "https://gitlink.org.cn/python123/moontrustflow"),
+        ("项目", PROJECT),
+        ("方向", "Policy-as-Code / 可信数据流治理 / 工程工具"),
+        ("许可证", "Apache-2.0"),
+        ("仓库", f"GitHub：{GITHUB}\nGitLink：{GITLINK}"),
     ]
     for row, (key, value) in zip(table.rows, rows):
         row.cells[0].text = key
         row.cells[1].text = value
+
     for section_title, text in SECTIONS:
-        doc.add_heading(section_title, level=1)
-        doc.add_paragraph(text)
+        heading = doc.add_paragraph()
+        heading_run = heading.add_run(section_title)
+        heading_run.bold = True
+        heading_run.font.size = Pt(11)
+        paragraph = doc.add_paragraph()
+        paragraph.paragraph_format.space_after = Pt(2)
+        paragraph.add_run(text.replace("<br/>", "\n"))
     doc.save(DOCX)
 
 
