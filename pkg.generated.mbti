@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "python123/moontrustflow"
+package "llgllg/moontrustflow"
 
 // Values
 pub fn analyze(Model) -> Array[Finding]

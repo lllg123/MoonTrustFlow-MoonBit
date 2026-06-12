@@ -2,7 +2,7 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt
+from docx.shared import Pt, RGBColor
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
@@ -79,73 +79,127 @@ def build_pdf() -> None:
         "title",
         parent=styles["Title"],
         fontName=font,
-        fontSize=18,
-        leading=24,
+        fontSize=17,
+        leading=22,
         alignment=TA_CENTER,
-        spaceAfter=8,
+        textColor=colors.white,
+        spaceAfter=0,
+    )
+    subtitle = ParagraphStyle(
+        "subtitle",
+        parent=styles["BodyText"],
+        fontName=font,
+        fontSize=8.6,
+        leading=11,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#d7efe9"),
     )
     heading = ParagraphStyle(
         "heading",
         parent=styles["Heading2"],
         fontName=font,
-        fontSize=10.5,
-        leading=14,
-        textColor=colors.HexColor("#1f3b73"),
-        spaceBefore=4,
-        spaceAfter=2,
+        fontSize=9.2,
+        leading=12,
+        textColor=colors.HexColor("#0f3f3a"),
+        spaceBefore=0,
+        spaceAfter=1,
     )
     body = ParagraphStyle(
         "body",
         parent=styles["BodyText"],
         fontName=font,
-        fontSize=8.8,
-        leading=12.5,
-        spaceAfter=2,
+        fontSize=8.45,
+        leading=11.4,
+        spaceAfter=0,
     )
     meta = ParagraphStyle(
         "meta",
         parent=styles["BodyText"],
         fontName=font,
-        fontSize=8.8,
-        leading=12,
+        fontSize=8.2,
+        leading=10.7,
+        textColor=colors.HexColor("#132321"),
     )
     doc = SimpleDocTemplate(
         str(PDF),
         pagesize=A4,
-        rightMargin=1.45 * cm,
-        leftMargin=1.45 * cm,
-        topMargin=1.3 * cm,
-        bottomMargin=1.25 * cm,
+        rightMargin=1.25 * cm,
+        leftMargin=1.25 * cm,
+        topMargin=1.05 * cm,
+        bottomMargin=1.0 * cm,
         title=TITLE,
     )
-    story = [Paragraph(TITLE, title)]
-    table = Table(
+    header = Table(
         [
-            [Paragraph("项目", meta), Paragraph(PROJECT, meta)],
-            [Paragraph("方向", meta), Paragraph("Policy-as-Code / 可信数据流治理 / 工程工具", meta)],
-            [Paragraph("许可证", meta), Paragraph("Apache-2.0", meta)],
-            [Paragraph("仓库", meta), Paragraph(f"GitHub：{GITHUB}<br/>GitLink：{GITLINK}", meta)],
+            [
+                Paragraph(TITLE, title),
+                Paragraph(
+                    "MoonBit Policy-as-Code / trusted flow governance / reproducible CI report",
+                    subtitle,
+                ),
+            ]
         ],
-        colWidths=[2.3 * cm, 15.2 * cm],
+        colWidths=[8.4 * cm, 9.1 * cm],
     )
-    table.setStyle(
+    header.setStyle(
         TableStyle(
             [
-                ("FONTNAME", (0, 0), (-1, -1), font),
-                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#edf3ff")),
-                ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa9c7")),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#103d3a")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 5),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-                ("TOPPADDING", (0, 0), (-1, -1), 3),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
             ]
         )
     )
-    story.extend([table, Spacer(1, 0.16 * cm)])
+    story = [header, Spacer(1, 0.16 * cm)]
+    facts = Table(
+        [
+            [
+                Paragraph("<b>项目</b><br/>MoonTrustFlow", meta),
+                Paragraph("<b>方向</b><br/>策略评估 / 可信数据流治理", meta),
+                Paragraph("<b>许可证</b><br/>Apache-2.0", meta),
+                Paragraph("<b>仓库</b><br/>GitHub + GitLink 同步", meta),
+            ],
+        ],
+        colWidths=[3.15 * cm, 6.05 * cm, 2.05 * cm, 6.25 * cm],
+    )
+    facts.setStyle(
+        TableStyle(
+            [
+                ("FONTNAME", (0, 0), (-1, -1), font),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#e9f4f0")),
+                ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#9db8b0")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ]
+        )
+    )
+    story.extend([facts, Spacer(1, 0.12 * cm)])
     for section_title, text in SECTIONS:
-        story.append(Paragraph(section_title, heading))
-        story.append(Paragraph(text, body))
+        block = Table(
+            [[Paragraph(section_title, heading), Paragraph(text, body)]],
+            colWidths=[3.25 * cm, 14.25 * cm],
+        )
+        block.setStyle(
+            TableStyle(
+                [
+                    ("LINEBEFORE", (0, 0), (0, 0), 2.4, colors.HexColor("#2c7a66")),
+                    ("BACKGROUND", (0, 0), (0, 0), colors.HexColor("#f0f7f4")),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ]
+            )
+        )
+        story.append(block)
+        story.append(Spacer(1, 0.055 * cm))
     doc.build(story)
 
 
@@ -164,6 +218,12 @@ def build_docx() -> None:
     run = title.add_run(TITLE)
     run.bold = True
     run.font.size = Pt(18)
+    run.font.color.rgb = RGBColor(16, 61, 58)
+    subtitle = doc.add_paragraph()
+    subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    subtitle_run = subtitle.add_run("MoonBit Policy-as-Code / 可信数据流治理 / 工程工具")
+    subtitle_run.font.size = Pt(9)
+    subtitle_run.font.color.rgb = RGBColor(44, 122, 102)
 
     table = doc.add_table(rows=4, cols=2)
     table.style = "Table Grid"

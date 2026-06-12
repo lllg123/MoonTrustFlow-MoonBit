@@ -9,7 +9,7 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "python123/moontrustflow"
+name = "llgllg/moontrustflow"
 
 version = "0.1.0"
 
