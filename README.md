@@ -91,7 +91,7 @@ moon run cmd/main
 ## Repository Links
 
 - GitLink: <https://www.gitlink.org.cn/lllglllg/MoonTrustFlow>
-- GitHub: <https://github.com/lllg123/MoonTrustFlow-MoonBit->
+- GitHub: <https://github.com/lllg123/MoonTrustFlow-MoonBit>
 
 ## Competition Materials
 
