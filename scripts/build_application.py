@@ -18,44 +18,40 @@ OUT = ROOT / "docs" / "competition"
 TITLE = "MoonTrustFlow 项目申报书"
 PROJECT = "MoonTrustFlow：MoonBit Policy-as-Code 与可信数据流治理工具包"
 GITLINK = "https://www.gitlink.org.cn/lllglllg/MoonTrustFlow"
-GITHUB = "https://github.com/lllg123/MoonTrustFlow-MoonBit-"
+GITHUB = "https://github.com/lllg123/MoonTrustFlow-MoonBit"
 PDF = OUT / "MoonTrustFlow项目申报书.pdf"
 DOCX = OUT / "MoonTrustFlow项目申报书.docx"
 
 SECTIONS = [
-    (
-        "1. 项目名称",
-        PROJECT,
-    ),
+    ("1. 项目名称", PROJECT),
     (
         "2. 项目简介",
         "MoonTrustFlow 是面向 MoonBit 生态的轻量策略评估工具包。项目使用 .mtf "
         "规则描述数据源、危险汇点、可信边界、净化控制点、数据流边、禁止路径、"
-        "必经控制点和例外策略，并输出可解释的合规/风险报告。",
+        "必经控制点和例外策略，并输出可解释的合规 / 风险报告。",
     ),
     (
         "3. 项目方向与适用场景",
-        "方向为工程工具、策略评估和基础软件生态补位。适用于服务边界治理、"
-        "CI 审计、架构评审、数据流控制点检查，以及后续接入 MoonBit AST 或调用图的工具链。",
+        "项目定位于工程治理工具、策略评估和基础软件生态补位，适用于服务边界治理、"
+        "CI 审计、架构评审、数据流控制点检查，以及后续接入 MoonBit AST 或调用图的"
+        "工具链。",
     ),
     (
         "4. 拟实现的核心功能",
-        "解析 .mtf 模型；支持 source/sink/sanitizer/boundary/node/edge；支持 deny、"
-        "require through=、allow；支持 severity 风险等级；按图路径评估策略并生成稳定报告。",
+        "解析 .mtf 模型；支持 source / sink / sanitizer / boundary / node / edge；"
+        "支持 deny、require through=、allow；支持 severity 风险等级；按图路径评估"
+        "策略并生成稳定报告。",
     ),
     (
         "5. 原创性说明",
-        "本项目为原创项目，不移植已有开源项目。选题避开通用数据流分析框架、"
-        "依赖风险扫描和 CI 工作流检查，聚焦策略规则、可信流模型与合规报告的组合。",
+        "本项目为原创工程治理工具，聚焦策略规则、可信流模型和可解释报告的组合，"
+        "不以通用静态分析框架或依赖扫描器为目标。",
     ),
-    (
-        "6. 仓库链接",
-        f"GitHub：{GITHUB}<br/>GitLink：{GITLINK}",
-    ),
+    ("6. 仓库链接", f"GitHub：{GITHUB}<br/>GitLink：{GITLINK}"),
     (
         "7. 提交说明",
-        "仓库保留 10-20 次有效提交，提交内容覆盖项目骨架、领域模型、解析器、"
-        "策略评估、CLI、测试、CI 和申报文档，不使用空提交或重复提交凑数。",
+        "仓库保留完整公开开发记录，提交内容覆盖项目骨架、领域模型、解析器、策略评估、"
+        "CLI、测试、CI 和竞赛文档，不使用空提交或重复提交凑数。",
     ),
 ]
 
@@ -130,15 +126,7 @@ def build_pdf() -> None:
         title=TITLE,
     )
     header = Table(
-        [
-            [
-                Paragraph(TITLE, title),
-                Paragraph(
-                    "MoonBit Policy-as-Code / trusted flow governance / reproducible CI report",
-                    subtitle,
-                ),
-            ]
-        ],
+        [[Paragraph(TITLE, title), Paragraph("MoonBit Policy-as-Code / trusted flow governance / reproducible CI report", subtitle)]],
         colWidths=[8.4 * cm, 9.1 * cm],
     )
     header.setStyle(
@@ -219,6 +207,7 @@ def build_docx() -> None:
     run.bold = True
     run.font.size = Pt(18)
     run.font.color.rgb = RGBColor(16, 61, 58)
+
     subtitle = doc.add_paragraph()
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle_run = subtitle.add_run("MoonBit Policy-as-Code / 可信数据流治理 / 工程工具")
@@ -245,6 +234,7 @@ def build_docx() -> None:
         paragraph = doc.add_paragraph()
         paragraph.paragraph_format.space_after = Pt(2)
         paragraph.add_run(text.replace("<br/>", "\n"))
+
     doc.save(DOCX)
 
 

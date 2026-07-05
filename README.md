@@ -1,26 +1,30 @@
 # MoonTrustFlow
 
-MoonTrustFlow is a lightweight Policy-as-Code toolkit for the MoonBit
-ecosystem. It parses a compact `.mtf` model language, evaluates trusted data
-flow policies, and produces deterministic reports that can be used in code
+MoonTrustFlow is a MoonBit Policy-as-Code toolkit for trusted data-flow
+governance. It lets a team describe sensitive inputs, dangerous sinks, trust
+boundaries, sanitizers, graph edges, and review exceptions in a compact `.mtf`
+model, then produces deterministic findings that are easy to reuse in code
 review, CI audit, and architecture governance workflows.
 
-The project focuses on a practical middle layer: teams can describe sources,
-sinks, trust boundaries, sanitizers, graph edges, deny rules, required control
-points, and reviewed exceptions without depending on a full language frontend in
-the first version.
+This project is intentionally narrow. It does not try to be a full compiler
+frontend, a generic static-analysis framework, or a dependency scanner. The
+current release focuses on the practical middle layer that many teams still
+lack: a reviewable rule model for trusted-flow control that can be written by
+humans today and connected to AST or call-graph adapters later.
 
-## Why This Project
+## Why MoonTrustFlow
 
 MoonBit already has strong language and package infrastructure, but the
 ecosystem still needs small engineering-governance libraries that are easy to
-embed into tools. MoonTrustFlow fills that space with a rule model that is
-simple enough to test thoroughly and general enough to grow toward source-code
-adapters, call graphs, and richer compliance output.
+embed into tools. MoonTrustFlow fills that gap with three priorities:
 
-## Capabilities
+- Clear policy semantics that are small enough to audit.
+- Deterministic output that is stable in CI and code review.
+- A reusable core model that can grow into richer adapters and reports.
 
-- Parse `.mtf` policy models with stable line/column diagnostics.
+## Current Capabilities
+
+- Parse `.mtf` policy models with stable line and column diagnostics.
 - Declare `source`, `sink`, `sanitizer`, `boundary`, `node`, and `edge`.
 - Express `deny`, `require`, and `allow` policies.
 - Attach `severity=high|medium|low` to risk rules.
@@ -47,8 +51,8 @@ allow request_body -> api_gateway -> escape_html -> render_html "encoded respons
 ```
 
 In this model, the path `request_body -> api_gateway -> render_html` violates
-both the explicit `deny` policy and the `require` policy because it does not pass
-through `escape_html`. The reviewed encoded path is listed as an exact
+both the explicit `deny` policy and the `require` policy because it does not
+pass through `escape_html`. The reviewed encoded path is listed as an exact
 exception.
 
 ## Public API
@@ -63,6 +67,23 @@ exception.
 
 Core data types include `NodeKind`, `RuleKind`, `Node`, `Edge`, `Policy`,
 `Model`, and `Finding`.
+
+## Quick Start
+
+If you want to use the package from Mooncakes after publication:
+
+```bash
+moon add llgllg/moontrustflow
+```
+
+To explore the repository locally:
+
+```bash
+moon info
+moon fmt --check
+moon test
+moon run cmd/main
+```
 
 ## CLI Demo
 
@@ -79,14 +100,30 @@ nodes=4, edges=4, policies=3, findings=2
 [medium] require violated: request_body -> api_gateway -> render_html | html output must be encoded | suggestion=route this path through escape_html or add a reviewed exception
 ```
 
-## Development
+## Engineering Status
 
-```bash
-moon info
-moon fmt --check
-moon test
-moon run cmd/main
-```
+- Main implementation language: MoonBit
+- License: Apache-2.0
+- Local verification baseline: `moon info`, `moon fmt --check`, `moon test`,
+  `moon run cmd/main`
+- CI workflow: `.github/workflows/ci.yml`
+- Package target: Mooncakes module `llgllg/moontrustflow`
+
+## Competition Completion Notes
+
+This repository was prepared as a public, verifiable MoonBit project for the
+2026 MoonBit competition workflow. The organizer's public acceptance-facing
+requirements checked on July 5, 2026 emphasize:
+
+- Public repositories
+- MoonBit as the primary implementation language
+- A clear README
+- Runnable examples
+- CI and tests
+- Publication on `mooncakes.io`
+
+The current completion materials live under `docs/competition/` and focus on
+evidence rather than proposal phrasing.
 
 ## Repository Links
 
@@ -95,9 +132,10 @@ moon run cmd/main
 
 ## Competition Materials
 
-- `docs/competition/proposal.md`
+- `docs/competition/completion-report.md`
 - `docs/competition/acceptance-checklist.md`
 - `docs/competition/submission-guide.md`
+- `docs/competition/proposal.md`
 - `docs/competition/MoonTrustFlow项目申报书.pdf`
 
 ## License

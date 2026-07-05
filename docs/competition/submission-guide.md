@@ -1,25 +1,39 @@
-# GitLink 报名表第 5、6、7 项填写说明
+# MoonTrustFlow 仓库与材料索引
 
-## 第 5 项：GitLink 仓库链接
+本文件保留比赛用仓库与材料入口，方便在 GitLink、GitHub、Mooncakes 和结项
+说明之间快速跳转。
 
-```text
-https://www.gitlink.org.cn/lllglllg/MoonTrustFlow
-```
-
-## 第 6 项：项目名称
+## 仓库入口
 
 ```text
-MoonTrustFlow：MoonBit Policy-as-Code 与可信数据流治理工具包
+GitLink: https://www.gitlink.org.cn/lllglllg/MoonTrustFlow
+GitHub:  https://github.com/lllg123/MoonTrustFlow-MoonBit
 ```
 
-## 第 7 项：项目申报书
+## 包入口
 
-上传 PDF 文件：
+目标 Mooncakes 模块名：
 
 ```text
-docs/competition/MoonTrustFlow项目申报书.pdf
+llgllg/moontrustflow
 ```
 
-同目录下的 `MoonTrustFlow项目申报书.docx` 是可编辑源文件。申报书内容已覆盖
-项目名称、项目简介、项目方向与适用场景、核心功能、原创性说明、GitHub 仓库、
-GitLink 仓库和 10-20 次有效提交说明。
+发布完成后，公开查询建议优先使用 Mooncakes API：
+
+```text
+https://mooncakes.io/api/v0/modules/llgllg/moontrustflow
+```
+
+## 竞赛材料
+
+- 结项说明：`docs/competition/completion-report.md`
+- 验收清单：`docs/competition/acceptance-checklist.md`
+- 申报归档：`docs/competition/proposal.md`
+- 申报 PDF：`docs/competition/MoonTrustFlow项目申报书.pdf`
+- 申报 DOCX：`docs/competition/MoonTrustFlow项目申报书.docx`
+
+## 说明
+
+- 申报书 PDF / DOCX 作为历史申报材料保留，本轮不重新生成。
+- 当前公开验收重点以组委会 2026 年公开赛事页可见要求为准。
+- 旧草稿里关于“10-20 次提交”的说法不再作为本轮结项依据。

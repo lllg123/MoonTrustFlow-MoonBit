@@ -22,12 +22,12 @@ Implemented components:
 - The project keeps a clear adapter boundary for future AST, call-graph, or
   architecture extraction inputs.
 
-## Acceptance
+## Acceptance Baseline
 
+- `moon info` completes cleanly.
+- `moon fmt --check` completes cleanly.
 - `moon test` passes.
 - `moon run cmd/main` prints a deterministic policy-evaluation demo.
 - `README.md` is a normal tracked file.
-- Competition materials use the GitLink and GitHub repositories supplied for
-  submission.
-- Git history remains in the 10-20 effective commit range required by the
-  organizer.
+- Competition materials point to the current GitLink and GitHub repositories.
+- The package is publishable as `llgllg/moontrustflow` on Mooncakes.
