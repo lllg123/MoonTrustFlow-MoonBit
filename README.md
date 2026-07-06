@@ -70,7 +70,7 @@ Core data types include `NodeKind`, `RuleKind`, `Node`, `Edge`, `Policy`,
 
 ## Quick Start
 
-If you want to use the package from Mooncakes after publication:
+The package is available on Mooncakes:
 
 ```bash
 moon add llgllg/moontrustflow
@@ -132,11 +132,11 @@ evidence rather than proposal phrasing.
 
 ## Competition Materials
 
-- `docs/competition/completion-report.md`
-- `docs/competition/acceptance-checklist.md`
-- `docs/competition/submission-guide.md`
-- `docs/competition/proposal.md`
-- `docs/competition/MoonTrustFlow项目申报书.pdf`
+- [Completion Report](docs/competition/completion-report.md)
+- [Acceptance Checklist](docs/competition/acceptance-checklist.md)
+- [Submission Guide](docs/competition/submission-guide.md)
+- [Proposal Archive](docs/competition/proposal.md)
+- [Proposal PDF](docs/competition/MoonTrustFlow项目申报书.pdf)
 
 ## License
 

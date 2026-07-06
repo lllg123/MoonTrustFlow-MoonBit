@@ -1,6 +1,6 @@
 # MoonTrustFlow 验收清单
 
-更新时间：2026-07-05
+更新时间：2026-07-06
 
 本清单用于对照组委会当前公开页面可见的验收重点，不再沿用早期本地草稿里
 “10-20 次提交”这一旧说法。当前公开规则更关注项目是否真实可用、文档是否
@@ -14,7 +14,7 @@
 - [x] 仓库包含源码、测试、CLI 示例、CI 和设计文档。
 - [x] GitLink 仓库为 `https://www.gitlink.org.cn/lllglllg/MoonTrustFlow`。
 - [x] GitHub 仓库为 `https://github.com/lllg123/MoonTrustFlow-MoonBit`。
-- [ ] Mooncakes 已发布并能通过公开 API 查询到 `llgllg/moontrustflow`。
+- [x] Mooncakes 已发布并能通过公开 API 查询到 `llgllg/moontrustflow`。
 
 ## 已实现能力
 
@@ -35,12 +35,12 @@
 - [x] `moon run cmd/main`
 - [x] `git ls-files -s README.md` 显示普通跟踪文件模式 `100644`
 - [x] 仓库中已清理旧 GitHub 尾部 `-` 链接
-- [x] 仓库中未保留可变位置的 `python123` 文案痕迹
+- [x] 仓库中未保留旧账号相关的可变文案痕迹
 
 ## 远端完成标准
 
-- [ ] GitLink 与 GitHub 指向同一最新提交。
-- [ ] GitHub Actions 重新跑一轮并通过。
+- [x] GitLink 与 GitHub 指向同一最新提交。
+- [x] GitHub Actions 最近一轮对 `main` / `master` 均通过。
 - [ ] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
 - [ ] GitLink “虚拟贡献者”问题已确认来源并在当前约束下处理完毕或记录为受限项。
 

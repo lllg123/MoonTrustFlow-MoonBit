@@ -18,7 +18,7 @@ GitHub:  https://github.com/lllg123/MoonTrustFlow-MoonBit
 llgllg/moontrustflow
 ```
 
-发布完成后，公开查询建议优先使用 Mooncakes API：
+当前公开查询建议优先使用 Mooncakes API：
 
 ```text
 https://mooncakes.io/api/v0/modules/llgllg/moontrustflow
@@ -26,11 +26,11 @@ https://mooncakes.io/api/v0/modules/llgllg/moontrustflow
 
 ## 竞赛材料
 
-- 结项说明：`docs/competition/completion-report.md`
-- 验收清单：`docs/competition/acceptance-checklist.md`
-- 申报归档：`docs/competition/proposal.md`
-- 申报 PDF：`docs/competition/MoonTrustFlow项目申报书.pdf`
-- 申报 DOCX：`docs/competition/MoonTrustFlow项目申报书.docx`
+- 结项说明：[docs/competition/completion-report.md](completion-report.md)
+- 验收清单：[docs/competition/acceptance-checklist.md](acceptance-checklist.md)
+- 申报归档：[docs/competition/proposal.md](proposal.md)
+- 申报 PDF：[docs/competition/MoonTrustFlow项目申报书.pdf](MoonTrustFlow项目申报书.pdf)
+- 申报 DOCX：[docs/competition/MoonTrustFlow项目申报书.docx](MoonTrustFlow项目申报书.docx)
 
 ## 说明
 
