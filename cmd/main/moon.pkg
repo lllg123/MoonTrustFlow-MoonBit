@@ -1,5 +1,6 @@
 import {
   "llgllg/moontrustflow" @trustflow,
+  "moonbitlang/core/env",
 }
 
 options(

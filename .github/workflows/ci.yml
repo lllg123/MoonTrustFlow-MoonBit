@@ -5,21 +5,88 @@ on:
   pull_request:
 
 jobs:
-  moonbit:
-    runs-on: ubuntu-latest
+  verify:
+    name: Verify (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install MoonBit
+      - name: Setup build tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc curl
+
+      - name: Setup build tools (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc || true
+
+      - name: Setup build tools (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+
+      - name: Install MoonBit (Unix)
+        if: runner.os != 'Windows'
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
-      - name: Verify MoonBit project
+      - name: Install MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "$HOME/.moon/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Verify toolchain
         run: |
           moon version --all
+          moon update
+
+      - name: Moon check
+        run: moon check --target all
+
+      - name: Moon test
+        run: moon test --target all
+
+      - name: Formatter cleanliness
+        run: |
+          moon fmt
+          git diff --exit-code
+
+      - name: Public API cleanliness
+        run: |
           moon info
-          moon fmt --check
-          moon test
-          moon run cmd/main
+          git diff --exit-code
+
+      - name: Embedded sample run
+        run: moon run cmd/main
+
+      - name: Fixture JSON analysis (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          export MOONTRUSTFLOW_MODEL_TEXT="$(cat fixtures/models/webapp_taint.mtf)"
+          export MOONTRUSTFLOW_SOURCE_LABEL="fixtures/models/webapp_taint.mtf"
+          moon run cmd/main -- --json
+
+      - name: Fixture JSON analysis (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:MOONTRUSTFLOW_MODEL_TEXT = Get-Content -Raw fixtures\models\webapp_taint.mtf
+          $env:MOONTRUSTFLOW_SOURCE_LABEL = "fixtures/models/webapp_taint.mtf"
+          moon run cmd/main -- --json
+

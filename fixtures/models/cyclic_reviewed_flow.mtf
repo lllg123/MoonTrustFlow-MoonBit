@@ -1,0 +1,15 @@
+source user_input "browser input"
+node cache "temporary cache"
+node worker "background worker"
+sanitizer validator "validation checkpoint"
+sink sink_api "dangerous side effect"
+
+edge user_input -> cache "seed"
+edge cache -> worker "fan out"
+edge worker -> cache "retry loop"
+edge worker -> validator "validated branch"
+edge validator -> sink_api "safe call"
+edge cache -> sink_api "legacy shortcut"
+
+deny user_input -> sink_api severity=high "direct user input must not reach side effects"
+allow user_input -> cache -> worker -> validator -> sink_api "validated worker path"

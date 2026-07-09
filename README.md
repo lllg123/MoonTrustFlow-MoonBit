@@ -1,36 +1,42 @@
 # MoonTrustFlow
 
 MoonTrustFlow is a MoonBit Policy-as-Code toolkit for trusted data-flow
-governance. It lets a team describe sensitive inputs, dangerous sinks, trust
-boundaries, sanitizers, graph edges, and review exceptions in a compact `.mtf`
-model, then produces deterministic findings that are easy to reuse in code
-review, CI audit, and architecture governance workflows.
+governance. It turns a compact `.mtf` rule file into deterministic findings
+that can be reused in code review, CI audit, architecture governance, and
+security acceptance work.
 
-This project is intentionally narrow. It does not try to be a full compiler
-frontend, a generic static-analysis framework, or a dependency scanner. The
-current release focuses on the practical middle layer that many teams still
-lack: a reviewable rule model for trusted-flow control that can be written by
-humans today and connected to AST or call-graph adapters later.
+This project is intentionally scoped as the policy and path-analysis middle
+layer. It does not claim to be a full compiler frontend or a production-ready
+whole-program analyzer. Instead, it focuses on the part many MoonBit projects
+still lack today: a small, reviewable, explainable trust-flow engine that can
+later accept AST, call-graph, or architecture-adapter inputs.
 
-## Why MoonTrustFlow
+## Why It Matters
 
-MoonBit already has strong language and package infrastructure, but the
-ecosystem still needs small engineering-governance libraries that are easy to
-embed into tools. MoonTrustFlow fills that gap with three priorities:
-
-- Clear policy semantics that are small enough to audit.
-- Deterministic output that is stable in CI and code review.
-- A reusable core model that can grow into richer adapters and reports.
+- MoonBit ecosystem projects need reusable governance tooling, not only runtime libraries.
+- Security and compliance reviews often need deterministic source-to-sink evidence instead of prose.
+- A compact rule language is easier to audit, version, and discuss in pull requests than ad hoc scripts.
 
 ## Current Capabilities
 
-- Parse `.mtf` policy models with stable line and column diagnostics.
-- Declare `source`, `sink`, `sanitizer`, `boundary`, `node`, and `edge`.
-- Express `deny`, `require`, and `allow` policies.
-- Attach `severity=high|medium|low` to risk rules.
-- Require a path to pass through a control point with `through=<node>`.
-- Suppress reviewed exact paths with `allow`.
-- Produce deterministic findings and text reports for CLI or CI use.
+- Parse `.mtf` models with stable line and column diagnostics.
+- Model `source`, `sink`, `sanitizer`, `boundary`, `node`, and `edge`.
+- Evaluate `deny`, `require through=`, and exact-path `allow` policies.
+- Report complex scenarios including multi-sink, branching, and cycle-pruned paths.
+- Emit both plain-text and JSON findings.
+- Drive real fixture analysis through repository scripts without changing the core package target surface.
+
+## Public API
+
+- `parse_model(input : String) -> Result[Model, TrustFlowError]`
+- `analyze(model : Model) -> Array[Finding]`
+- `format_finding(finding : Finding) -> String`
+- `format_report(findings : Array[Finding]) -> String`
+- `format_report_json(findings : Array[Finding]) -> String`
+- `format_error(err : TrustFlowError) -> String`
+
+Core public types include `NodeKind`, `RuleKind`, `Node`, `Edge`, `Policy`,
+`Model`, `Finding`, and `TrustFlowError`.
 
 ## Example Model
 
@@ -50,90 +56,99 @@ require request_body -> render_html through=escape_html severity=medium "html ou
 allow request_body -> api_gateway -> escape_html -> render_html "encoded response path"
 ```
 
-In this model, the path `request_body -> api_gateway -> render_html` violates
-both the explicit `deny` policy and the `require` policy because it does not
-pass through `escape_html`. The reviewed encoded path is listed as an exact
-exception.
-
-## Public API
-
-- `parse_model(input : String) -> Result[Model, TrustFlowError]`
-- `analyze(model : Model) -> Array[Finding]`
-- `format_finding(finding : Finding) -> String`
-- `format_report(findings : Array[Finding]) -> String`
-- `format_error(err : TrustFlowError) -> String`
-- `node_kind_name(kind : NodeKind) -> String`
-- `rule_kind_name(kind : RuleKind) -> String`
-
-Core data types include `NodeKind`, `RuleKind`, `Node`, `Edge`, `Policy`,
-`Model`, and `Finding`.
-
 ## Quick Start
 
-The package is available on Mooncakes:
+Install the package from Mooncakes:
 
 ```bash
 moon add llgllg/moontrustflow
 ```
 
-To explore the repository locally:
+Validate the repository locally:
 
 ```bash
-moon info
-moon fmt --check
+moon check --target all
 moon test
+moon fmt
+moon info
 moon run cmd/main
 ```
 
-## CLI Demo
+Analyze a real `.mtf` fixture through the repository wrapper:
 
-```bash
-moon run cmd/main
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\analyze_model.ps1 -Path fixtures\models\webapp_taint.mtf -Json
 ```
 
-Expected output shape:
+The wrapper reads the file, exports `MOONTRUSTFLOW_MODEL_TEXT`, and then reuses
+`moon run cmd/main` for deterministic JSON or text output.
+
+## CLI Behavior
+
+`moon run cmd/main` always works with the embedded sample model.
 
 ```text
 MoonTrustFlow policy evaluation
+source=embedded-sample
 nodes=4, edges=4, policies=3, findings=2
-[high] deny violated: request_body -> api_gateway -> render_html | raw input must not render directly | suggestion=review or allow this path explicitly
-[medium] require violated: request_body -> api_gateway -> render_html | html output must be encoded | suggestion=route this path through escape_html or add a reviewed exception
 ```
+
+Add `--json` or `-j` to emit structured output:
+
+```bash
+moon run cmd/main -- --json
+```
+
+For real files, use the wrapper script shown above. This keeps the core package
+cross-target friendly while still providing a practical repository CLI for
+actual `.mtf` inputs.
 
 ## Engineering Status
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Local verification baseline: `moon info`, `moon fmt --check`, `moon test`,
-  `moon run cmd/main`
+- Tracked MoonBit source/interface scale on 2026-07-10: about `1026` lines across `.mbt` and `.mbti`
+- Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
+- Mooncakes module: `llgllg/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
-- Package target: Mooncakes module `llgllg/moontrustflow`
 
-## Competition Completion Notes
+## OSC2026 Notes
 
-This repository was prepared as a public, verifiable MoonBit project for the
-2026 MoonBit competition workflow. The organizer's public acceptance-facing
-requirements checked on July 5, 2026 emphasize:
+The official OSC2026 site checked on **2026-07-10** shows:
 
-- Public repositories
-- MoonBit as the primary implementation language
-- A clear README
-- Runnable examples
-- CI and tests
-- Publication on `mooncakes.io`
+- proposal and development window through **2026-07-12**
+- acceptance window **2026-07-13** to **2026-07-17**
+- a reference project scale signal of about **4~10k LOC**
+- emphasis on public development traces, clear documentation, runnable tests,
+  maintainability, and ecosystem value
 
-The current completion materials live under `docs/competition/` and focus on
-evidence rather than proposal phrasing.
+MoonTrustFlow is still below that reference LOC band, so this repository now
+responds by making the implemented scope more concrete:
+
+- split MoonBit modules instead of one large file
+- richer fixtures and edge-case tests
+- JSON output in addition to text output
+- contributor identity and acceptance self-check scripts
+- CI aligned to the MoonBit 0.10.3-compatible command set
+
+Important toolchain note: on the current MoonBit 0.10.3 CLI, `moon fmt
+--deny-warn` and `moon info --deny-warn` are not accepted commands. This repo
+therefore uses the community-compatible validation pattern:
+
+- `moon fmt` + `git diff --exit-code`
+- `moon info` + `git diff --exit-code`
 
 ## Repository Links
 
 - GitLink: <https://www.gitlink.org.cn/lllglllg/MoonTrustFlow>
 - GitHub: <https://github.com/lllg123/MoonTrustFlow-MoonBit>
+- Mooncakes: <https://mooncakes.io/modules/llgllg/moontrustflow>
 
 ## Competition Materials
 
-- [Completion Report](docs/competition/completion-report.md)
 - [Acceptance Checklist](docs/competition/acceptance-checklist.md)
+- [Completion Report](docs/competition/completion-report.md)
+- [Source Attribution](docs/competition/source-attribution.md)
 - [Submission Guide](docs/competition/submission-guide.md)
 - [Proposal Archive](docs/competition/proposal.md)
 - [Proposal PDF](docs/competition/MoonTrustFlow项目申报书.pdf)

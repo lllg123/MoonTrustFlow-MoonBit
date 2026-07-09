@@ -2,32 +2,46 @@
 
 ## Current Scope
 
-MoonTrustFlow v1 is implemented as a MoonBit library plus a small CLI demo. The
-core scope is a policy model evaluator rather than a source-code parser.
+MoonTrustFlow is implemented as a MoonBit library plus a repository CLI entry.
+The core library stays focused on policy parsing, graph traversal, and finding
+generation. Real file ingestion is handled by repository scripts that bridge
+fixture content into the CLI, so the library itself remains cross-target
+friendly.
 
 Implemented components:
 
-1. `.mtf` line parser with quoted text and diagnostics.
-2. Domain model for nodes, edges, policies, models, and findings.
-3. Policy evaluation for `deny`, `require`, and `allow`.
-4. CLI demonstration under `cmd/main`.
-5. Blackbox tests for parser behavior, policy evaluation, and report output.
-6. Competition documents and CI workflow.
+1. Focused MoonBit source files for types, parsing, path search, analysis, and reporting.
+2. `.mtf` parser with deterministic diagnostics.
+3. Policy evaluation for `deny`, `require through=`, and exact-path `allow`.
+4. Text and JSON finding output.
+5. Complex fixture scenarios for branching, multi-sink, and cycle-pruning flows.
+6. Acceptance, contributor-identity, and repository verification scripts.
+7. Competition-facing documentation and CI workflow.
 
 ## Design Choices
 
-- The parser is dependency-free to keep the package easy to build.
-- Policy evaluation is deterministic so CI output is stable.
-- `allow` uses exact path matching to avoid accidentally hiding broad risks.
-- The project keeps a clear adapter boundary for future AST, call-graph, or
-  architecture extraction inputs.
+- Keep the core analysis package dependency-light and portable.
+- Keep `allow` exact rather than broad to avoid hiding real findings.
+- Separate sample-mode CLI behavior from file-backed wrapper behavior so `moon run cmd/main` remains easy to run everywhere.
+- Prefer evidence-producing scripts over informal checklist prose.
 
 ## Acceptance Baseline
 
-- `moon info` completes cleanly.
-- `moon fmt --check` completes cleanly.
-- `moon test` passes.
-- `moon run cmd/main` prints a deterministic policy-evaluation demo.
-- `README.md` is a normal tracked file.
-- Competition materials point to the current GitLink and GitHub repositories.
-- The package is publishable as `llgllg/moontrustflow` on Mooncakes.
+- `moon check --target all` completes cleanly.
+- `moon test` passes locally.
+- `moon fmt` produces no diff.
+- `moon info` produces no diff.
+- `moon run cmd/main` prints the embedded deterministic sample analysis.
+- `scripts/analyze_model.ps1` can analyze a real `.mtf` fixture and emit JSON.
+- `scripts/verify_acceptance.ps1` checks required files, contributor identities, Mooncakes visibility, remote defaults, and tracked MoonBit source scale.
+
+## Known Local Constraint
+
+On this Windows machine, `moon test --target all` still depends on a system C
+compiler for the native target. The repository therefore treats:
+
+- local baseline: `moon test`
+- CI baseline: `moon test --target all`
+
+This constraint is recorded rather than hidden.
+

@@ -1,74 +1,111 @@
 # MoonTrustFlow 结项说明
 
-更新时间：2026-07-06
+更新时间：2026-07-10
 
-## 1. 项目定位
+## 1. 本轮整改目标
 
-MoonTrustFlow 是一个面向 MoonBit 生态的 Policy-as-Code 工具包，重点解决
-可信数据流治理中的规则表达、路径评估和可解释报告问题。它不替代编译器前端
-或大型静态分析框架，而是提供一个更轻、更稳定、也更容易接入工程流程的策略
-层。
+根据组委会预验收意见，本轮整改聚焦三件事：
 
-当前版本适合放入以下工作流：
+1. 把仓库验证口径、CI 和文档同步到 MoonBit 0.10.3 兼容命令集。
+2. 把项目从“单文件规则解析 demo”推进到“更像可接入真实工程的数据流治理库”。
+3. 在不改写历史的前提下，补齐双远程、自查脚本和身份说明材料。
 
-- 代码评审中的风险路径说明；
-- CI 审计中的控制点检查；
-- 架构治理中的边界和例外规则沉淀；
-- 后续 AST / 调用图 / 架构图适配器的统一策略后端。
+## 2. 已完成的核心改进
 
-## 2. 本轮结项补充内容
+### 2.1 MoonBit 实现结构
 
-- 重写 README，补齐项目定位、能力边界、快速使用方式和工程状态说明。
-- 清理仓库中的旧 GitHub 尾部 `-` 链接与过时的本地验收说法。
-- 新增当前结项说明，替换早期“更像申报材料”的仓库呈现方式。
-- 保留申报 PDF / DOCX，但不再把申报书当作当前验收说明的主入口。
-- 统一 GitLink、GitHub、Mooncakes 三个对外面向的命名与链接目标。
+- 将核心实现拆分为类型、解析、路径搜索、策略评估、报告格式化等多个 `.mbt` 文件。
+- 保持公开 API 稳定，同时新增 JSON 报告能力。
+- 保持核心分析包跨目标友好，不把 native-only 文件系统依赖直接压进库本体。
 
-## 3. 与公开验收要求的对应关系
+### 2.2 规则与测试覆盖
 
-根据 2026 年公开赛事页当前可见内容，验收侧重点包括：
+- 新增多源/多汇、链式 sanitizer、路径例外、循环剪枝、分支汇合等复杂 fixture。
+- 扩充黑盒与白盒测试，补齐复杂污染传播与边界诊断场景。
+- 当前本地 `moon test` 已通过，`moon check --target all` 已通过。
 
-- MoonBit 为主要实现语言；
-- 仓库公开可访问；
-- README 清晰；
-- 示例可运行；
-- CI 与测试可运行；
-- 已发布到 `mooncakes.io`。
+### 2.3 真实 `.mtf` 输入能力
 
-MoonTrustFlow 当前仓库内已满足前五项，且 Mooncakes API 已可查询到
-`llgllg/moontrustflow`，相关证据可在最终交付报告中直接引用。
+- `moon run cmd/main` 继续保留跨目标可跑的嵌入样例模式。
+- 新增 `scripts/analyze_model.ps1`，通过环境变量桥接真实 `.mtf` 文件内容，再复用
+  `cmd/main` 输出文本或 JSON 结果。
+- 该设计避免为读取文件而破坏核心包的跨目标检查能力。
 
-## 4. 当前项目内容
+### 2.4 CI 与验收脚本
 
-- MoonBit 核心库：实现 `.mtf` 规则解析、图模型构建与策略评估。
-- CLI 示例：`moon run cmd/main`
-- 测试集：覆盖解析行为、策略评估和报告输出。
-- CI：GitHub Actions 自动执行 `moon info`、`moon fmt --check`、
-  `moon test`、`moon run cmd/main`
-- 文档：README、设计说明、实现计划、验收清单、结项说明、申报归档。
+- 重写 `.github/workflows/ci.yml` 为三平台矩阵。
+- CI 明确包含：
+  `moon update`
+  `moon check --target all`
+  `moon test --target all`
+  `moon fmt` + `git diff --exit-code`
+  `moon info` + `git diff --exit-code`
+  `moon run cmd/main`
+- 新增 `scripts/verify_acceptance.ps1`，把 README、LICENSE、CI、Mooncakes、默认分支、
+  贡献者身份、源码规模和真实 fixture 分析都固定为可重复步骤。
 
-## 5. 验证基线
+## 3. 与预验收意见的对应关系
 
-本地固定验证命令：
+### 3.1 关于命令兼容性
+
+组委会意见中提到 `moon fmt --deny-warn` 与 `moon info --deny-warn`。
+在当前本地 MoonBit 0.10.3 CLI 上，这两个命令并不被接受。
+
+因此本仓库不伪造“它们可以通过”，而是采用与社区模板一致、且当前工具链真实
+支持的替代验收方式：
+
+- `moon fmt` 后检查 `git diff --exit-code`
+- `moon info` 后检查 `git diff --exit-code`
+
+### 3.2 关于 CI 缺失
+
+已按当前 MoonBit 社区模板方向补齐三平台 CI，并加入 `moon update`、全目标检查、
+全目标测试以及无 diff 校验。
+
+### 3.3 关于“实现规模较小”
+
+当前仓库仍低于官方页面给出的 `4~10k LOC` 参考区间，但已经不再停留在单文件
+解析和简单路径检查阶段，而是向以下方向补强：
+
+- 更清晰的工程模块化组织；
+- 更真实的数据流 fixture；
+- JSON 输出；
+- 更完整的边界测试；
+- 自查脚本、CHANGELOG、来源说明和双远程核查材料。
+
+当前跟踪的 `.mbt` / `.mbti` 规模约为 `1026` 行，后续若继续冲刺正式验收，
+建议优先增加：
+
+- AST / 调用图适配入口；
+- fixture 到报告的批处理能力；
+- 更明确的 service / namespace 分组策略；
+- 更系统的性能基准。
+
+## 4. 当前验证基线
+
+本地已验证：
 
 ```bash
-moon info
-moon fmt --check
+moon check --target all
 moon test
+moon fmt
+moon info
 moon run cmd/main
+powershell -ExecutionPolicy Bypass -File scripts\analyze_model.ps1 -Path fixtures\models\webapp_taint.mtf -Json
 ```
 
-远端固定验证点：
+本机限制：
 
-- GitLink 与 GitHub 指向同一最新提交；
-- GitHub Actions 新跑一轮并通过；
-- Mooncakes API 能查询到 `llgllg/moontrustflow`，或明确记录唯一阻塞点；
-- GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
+- 当前 Windows 环境没有系统 C 编译器，因此本地不能把
+  `moon test --target all` 的 native 结果当作已完成事实。
 
-## 6. 关于身份与历史痕迹
+CI 负责覆盖：
 
-- 仓库当前可变位置不再继续放大旧账号相关的文字痕迹。
-- 旧 GitHub Actions actor、旧提交作者信息若已公开且不可变，本轮不通过改写历
-  史来删除。
-- GitLink “虚拟贡献者”优先按平台侧对象处理；若事实证明它由公开历史统计产
-  生，则在不强推、不改写历史的约束下记录为受限项。
+- `moon test --target all`
+- 三平台一致性
+
+## 5. 关于身份与公开历史
+
+- 当前后续维护身份统一为 `llgllg <1357801557@qq.com>`。
+- 旧账号、旧名字、旧邮箱若已经存在于公开历史中，本轮不通过改写历史移除。
+- GitLink “虚拟贡献者”若仍出现，优先按平台统计问题记录来源，不通过重写历史处理。

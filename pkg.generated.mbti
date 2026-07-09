@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "llgllg/moontrustflow"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn analyze(Model) -> Array[Finding]
 
@@ -12,11 +16,15 @@ pub fn format_finding(Finding) -> String
 
 pub fn format_report(Array[Finding]) -> String
 
+pub fn format_report_json(Array[Finding]) -> String
+
 pub fn node_kind_name(NodeKind) -> String
 
 pub fn parse_model(String) -> Result[Model, TrustFlowError]
 
 pub fn rule_kind_name(RuleKind) -> String
+
+pub fn sample_model_text() -> String
 
 // Errors
 
@@ -25,7 +33,7 @@ pub(all) struct Edge {
   from : String
   to : String
   label : String
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Finding {
   severity : String
@@ -35,19 +43,19 @@ pub(all) struct Finding {
   path : Array[String]
   message : String
   suggestion : String
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Model {
   nodes : Array[Node]
   edges : Array[Edge]
   policies : Array[Policy]
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Node {
   name : String
   kind : NodeKind
   description : String
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum NodeKind {
   Source
@@ -55,7 +63,7 @@ pub(all) enum NodeKind {
   Sanitizer
   Boundary
   Normal
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Policy {
   kind : RuleKind
@@ -63,18 +71,18 @@ pub(all) struct Policy {
   through : String
   severity : String
   description : String
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Position {
   line : Int
   column : Int
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum RuleKind {
   Allow
   Deny
   Require
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum TrustFlowError {
   UnknownDirective(Position, String)
@@ -84,7 +92,7 @@ pub(all) enum TrustFlowError {
   MissingPathNode(Position)
   MissingThrough(Position)
   UnterminatedQuote(Position)
-} derive(Eq)
+} derive(Eq, ToJson, @debug.Debug)
 
 // Type aliases
 
