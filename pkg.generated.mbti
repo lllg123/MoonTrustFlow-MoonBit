@@ -8,6 +8,8 @@ import {
 // Values
 pub fn analyze(Model) -> Array[Finding]
 
+pub fn analyze_text(String) -> Result[Array[Finding], TrustFlowError]
+
 pub fn empty_model() -> Model
 
 pub fn format_error(TrustFlowError) -> String

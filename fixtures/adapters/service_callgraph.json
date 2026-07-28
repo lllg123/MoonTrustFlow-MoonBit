@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "kind": "source",
+      "name": "http_request_body",
+      "description": "external body payload"
+    },
+    {
+      "kind": "boundary",
+      "name": "user_service",
+      "description": "service orchestration layer"
+    },
+    {
+      "kind": "sanitizer",
+      "name": "html_escape",
+      "description": "html encoding checkpoint"
+    },
+    {
+      "kind": "sink",
+      "name": "template_render",
+      "description": "html output renderer"
+    }
+  ],
+  "edges": [
+    {
+      "from": "http_request_body",
+      "to": "user_service",
+      "label": "request dispatch"
+    },
+    {
+      "from": "user_service",
+      "to": "template_render",
+      "label": "legacy render"
+    },
+    {
+      "from": "user_service",
+      "to": "html_escape",
+      "label": "safe render prep"
+    },
+    {
+      "from": "html_escape",
+      "to": "template_render",
+      "label": "safe render"
+    }
+  ],
+  "policies": [
+    {
+      "kind": "deny",
+      "path": ["http_request_body", "template_render"],
+      "severity": "high",
+      "description": "raw request payload must not reach template rendering"
+    },
+    {
+      "kind": "require",
+      "path": ["http_request_body", "template_render"],
+      "through": "html_escape",
+      "severity": "medium",
+      "description": "html output must pass through encoding"
+    },
+    {
+      "kind": "allow",
+      "path": [
+        "http_request_body",
+        "user_service",
+        "html_escape",
+        "template_render"
+      ],
+      "description": "reviewed encoded render path"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 param(
   [string[]]$Refs = @("HEAD", "origin/master", "origin/main", "github/master", "github/main"),
+  [string[]]$AllowedGitHubLogins = @("lllg123"),
+  [string]$GitHubRepo = "lllg123/MoonTrustFlow-MoonBit",
   [switch]$FailOnUnexpected
 )
 
@@ -14,6 +16,26 @@ function Test-GitRefExists {
 function Get-RefIdentities {
   param([string]$Ref)
   git log --format="%an <%ae>" $Ref | Sort-Object -Unique
+}
+
+function Test-GhExists {
+  return $null -ne (Get-Command gh -ErrorAction SilentlyContinue)
+}
+
+function Get-GitHubContributorLogins {
+  param([string]$Repo)
+  if (-not (Test-GhExists)) {
+    Write-Host "[skip] gh is not available; skipping GitHub contributor API audit"
+    return @()
+  }
+
+  $raw = gh api "repos/$Repo/contributors" --paginate --jq ".[].login" 2>$null
+  if (-not $raw) {
+    Write-Host "[skip] unable to query GitHub contributors for $Repo"
+    return @()
+  }
+
+  ($raw -split "`r?`n" | Where-Object { $_ -and $_.Trim() -ne "" } | Sort-Object -Unique)
 }
 
 $known = @(
@@ -43,6 +65,25 @@ foreach ($ref in $Refs) {
   }
 }
 
+$unexpectedGitHubLogins = @()
+$contributorLogins = Get-GitHubContributorLogins -Repo $GitHubRepo
+if ($contributorLogins.Count -gt 0) {
+  Write-Host "[github contributors api]"
+  foreach ($login in $contributorLogins) {
+    $tag = if ($AllowedGitHubLogins -contains $login) { "known" } else { "unexpected" }
+    Write-Host "  - $login [$tag]"
+    if ($tag -eq "unexpected") {
+      $foundUnexpected = $true
+      $unexpectedGitHubLogins += $login
+    }
+  }
+}
+
 if ($FailOnUnexpected -and $foundUnexpected) {
-  throw "Unexpected contributor identities were found."
+  $detail = if ($unexpectedGitHubLogins.Count -gt 0) {
+    " Unexpected GitHub logins: " + ($unexpectedGitHubLogins -join ", ")
+  } else {
+    ""
+  }
+  throw "Unexpected contributor identities were found.$detail"
 }

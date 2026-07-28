@@ -12,6 +12,14 @@ pub fn analyze(model : Model) -> Array[Finding] {
 }
 
 ///|
+pub fn analyze_text(input : String) -> Result[Array[Finding], TrustFlowError] {
+  match parse_model(input) {
+    Ok(model) => Ok(analyze(model))
+    Err(err) => Err(err)
+  }
+}
+
+///|
 fn evaluate_deny(
   model : Model,
   policy : Policy,

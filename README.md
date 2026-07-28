@@ -25,11 +25,14 @@ later accept AST, call-graph, or architecture-adapter inputs.
 - Report complex scenarios including multi-sink, branching, and cycle-pruned paths.
 - Emit both plain-text and JSON findings.
 - Drive real fixture analysis through repository scripts without changing the core package target surface.
+- Import a lightweight call-graph JSON description into `.mtf` for adapter-oriented experiments.
+- Run a repeatable performance smoke test over generated larger trust-flow graphs.
 
 ## Public API
 
 - `parse_model(input : String) -> Result[Model, TrustFlowError]`
 - `analyze(model : Model) -> Array[Finding]`
+- `analyze_text(input : String) -> Result[Array[Finding], TrustFlowError]`
 - `format_finding(finding : Finding) -> String`
 - `format_report(findings : Array[Finding]) -> String`
 - `format_report_json(findings : Array[Finding]) -> String`
@@ -80,8 +83,26 @@ Analyze a real `.mtf` fixture through the repository wrapper:
 powershell -ExecutionPolicy Bypass -File scripts\analyze_model.ps1 -Path fixtures\models\webapp_taint.mtf -Json
 ```
 
+Cross-platform wrapper:
+
+```bash
+python scripts/analyze_model.py fixtures/models/webapp_taint.mtf --json
+```
+
 The wrapper reads the file, exports `MOONTRUSTFLOW_MODEL_TEXT`, and then reuses
 `moon run cmd/main` for deterministic JSON or text output.
+
+Import a simple call-graph fixture into `.mtf`:
+
+```bash
+python scripts/import_callgraph.py fixtures/adapters/service_callgraph.json
+```
+
+Run a lightweight performance smoke test:
+
+```bash
+python scripts/benchmark_analysis.py --hops 64
+```
 
 ## CLI Behavior
 
@@ -103,18 +124,32 @@ For real files, use the wrapper script shown above. This keeps the core package
 cross-target friendly while still providing a practical repository CLI for
 actual `.mtf` inputs.
 
+## Adapter Fixture
+
+`fixtures/adapters/service_callgraph.json` demonstrates a minimal adapter schema:
+
+- `nodes`: typed graph nodes that become `source`, `sink`, `sanitizer`, `boundary`, or `node`
+- `edges`: graph edges with optional labels
+- `policies`: `allow`, `deny`, and `require` rules with optional `through` and `severity`
+
+The generated `fixtures/models/service_callgraph_imported.mtf` gives us a
+reviewable text artifact that can still be fed into the normal MoonTrustFlow
+analysis flow.
+
 ## Engineering Status
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Tracked MoonBit source/interface scale on 2026-07-10: about `1026` lines across `.mbt` and `.mbti`
+- Tracked MoonBit source/interface scale on 2026-07-28: `1078` lines across `.mbt` and `.mbti`
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
 - Mooncakes module: `llgllg/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
+- GitHub contributor API checked on `2026-07-28`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
+- Remote HEAD audit on `2026-07-28`: GitHub currently defaults to `main`, while GitLink currently defaults to `master`
 
 ## OSC2026 Notes
 
-The official OSC2026 site checked on **2026-07-10** shows:
+The official OSC2026 materials checked on **2026-07-28** still point to:
 
 - proposal and development window through **2026-07-12**
 - acceptance window **2026-07-13** to **2026-07-17**
@@ -128,6 +163,7 @@ responds by making the implemented scope more concrete:
 - split MoonBit modules instead of one large file
 - richer fixtures and edge-case tests
 - JSON output in addition to text output
+- cross-platform wrapper scripts, call-graph import, and benchmark smoke checks
 - contributor identity and acceptance self-check scripts
 - CI aligned to the MoonBit 0.10.3-compatible command set
 

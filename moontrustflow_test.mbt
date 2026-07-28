@@ -281,3 +281,49 @@ test "branching fixture reports multiple unsafe leaves" {
   let findings = @moontrustflow.analyze(model)
   assert_eq(findings.length(), 4)
 }
+
+///|
+test "analyze_text keeps parse and analysis in one stable entry point" {
+  match
+    @moontrustflow.analyze_text(
+      "source request_body \"external input\"\n" +
+      "sink render_html \"html renderer\"\n" +
+      "edge request_body -> render_html \"direct render\"\n" +
+      "deny request_body -> render_html severity=high \"raw render is forbidden\"",
+    ) {
+    Ok(findings) => {
+      assert_eq(findings.length(), 1)
+      assert_eq(findings[0].rule, "deny")
+    }
+    Err(err) => abort(@moontrustflow.format_error(err))
+  }
+}
+
+///|
+test "deep chain stays deterministic for larger path search" {
+  let model = model_ok(
+    "source request_body \"external input\"\n" +
+    "node hop_01 \"hop\"\n" +
+    "node hop_02 \"hop\"\n" +
+    "node hop_03 \"hop\"\n" +
+    "node hop_04 \"hop\"\n" +
+    "node hop_05 \"hop\"\n" +
+    "node hop_06 \"hop\"\n" +
+    "node hop_07 \"hop\"\n" +
+    "node hop_08 \"hop\"\n" +
+    "sink audit_sink \"audit\"\n" +
+    "edge request_body -> hop_01 \"hop\"\n" +
+    "edge hop_01 -> hop_02 \"hop\"\n" +
+    "edge hop_02 -> hop_03 \"hop\"\n" +
+    "edge hop_03 -> hop_04 \"hop\"\n" +
+    "edge hop_04 -> hop_05 \"hop\"\n" +
+    "edge hop_05 -> hop_06 \"hop\"\n" +
+    "edge hop_06 -> hop_07 \"hop\"\n" +
+    "edge hop_07 -> hop_08 \"hop\"\n" +
+    "edge hop_08 -> audit_sink \"hop\"\n" +
+    "deny request_body -> audit_sink severity=medium \"long unsafe chain\"",
+  )
+  let findings = @moontrustflow.analyze(model)
+  assert_eq(findings.length(), 1)
+  assert_eq(findings[0].path.length(), 10)
+}

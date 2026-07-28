@@ -7,6 +7,8 @@ on:
 jobs:
   verify:
     name: Verify (${{ matrix.os }})
+    permissions:
+      contents: read
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -14,42 +16,16 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build tools (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc curl
-
-      - name: Setup build tools (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install gcc || true
-
-      - name: Setup build tools (Windows)
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
+      - uses: actions/checkout@v5
         with:
-          msystem: UCRT64
-          update: true
-          install: >-
-            mingw-w64-ucrt-x86_64-gcc
+          persist-credentials: false
 
-      - name: Install MoonBit (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
-
-      - name: Install MoonBit (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
-          "$HOME/.moon/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+      - name: Setup MoonBit
+        uses: hustcer/setup-moonbit@v1.22
+        with:
+          version: 0.10.3+16975d007
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify toolchain
         run: |
@@ -78,15 +54,10 @@ jobs:
       - name: Fixture JSON analysis (Unix)
         if: runner.os != 'Windows'
         run: |
-          export MOONTRUSTFLOW_MODEL_TEXT="$(cat fixtures/models/webapp_taint.mtf)"
-          export MOONTRUSTFLOW_SOURCE_LABEL="fixtures/models/webapp_taint.mtf"
-          moon run cmd/main -- --json
+          python scripts/analyze_model.py fixtures/models/webapp_taint.mtf --json
 
       - name: Fixture JSON analysis (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $env:MOONTRUSTFLOW_MODEL_TEXT = Get-Content -Raw fixtures\models\webapp_taint.mtf
-          $env:MOONTRUSTFLOW_SOURCE_LABEL = "fixtures/models/webapp_taint.mtf"
-          moon run cmd/main -- --json
-
+          python scripts/analyze_model.py fixtures/models/webapp_taint.mtf --json

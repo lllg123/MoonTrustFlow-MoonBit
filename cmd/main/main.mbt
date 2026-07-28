@@ -15,6 +15,28 @@ fn render_text_report(
 }
 
 ///|
+fn render_json_report(
+  source_label : String,
+  model : @trustflow.Model,
+  findings : Array[@trustflow.Finding],
+) -> Unit {
+  let payload : Map[String, Json] = {
+    "source": source_label.to_json(),
+    "nodes": model.nodes.to_json(),
+    "edges": model.edges.to_json(),
+    "policies": model.policies.to_json(),
+    "findings": findings.to_json(),
+    "summary": {
+      "node_count": model.nodes.length(),
+      "edge_count": model.edges.length(),
+      "policy_count": model.policies.length(),
+      "finding_count": findings.length(),
+    }.to_json(),
+  }
+  println(payload.to_json().stringify(indent=2))
+}
+
+///|
 fn parse_cli_json_flag(args : Array[String]) -> Bool {
   for arg in args {
     if arg == "--json" || arg == "-j" {
@@ -37,28 +59,6 @@ fn select_model_input() -> (String, String) {
       )
     _ => (@trustflow.sample_model_text(), "embedded-sample")
   }
-}
-
-///|
-fn render_json_report(
-  source_label : String,
-  model : @trustflow.Model,
-  findings : Array[@trustflow.Finding],
-) -> Unit {
-  let payload : Map[String, Json] = {
-    "source": source_label.to_json(),
-    "nodes": model.nodes.to_json(),
-    "edges": model.edges.to_json(),
-    "policies": model.policies.to_json(),
-    "findings": findings.to_json(),
-    "summary": {
-      "node_count": model.nodes.length(),
-      "edge_count": model.edges.length(),
-      "policy_count": model.policies.length(),
-      "finding_count": findings.length(),
-    }.to_json(),
-  }
-  println(payload.to_json().stringify(indent=2))
 }
 
 ///|

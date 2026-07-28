@@ -84,6 +84,18 @@ Invoke-Step "Real .mtf fixture via wrapper" {
   powershell -ExecutionPolicy Bypass -File scripts\analyze_model.ps1 -Path fixtures\models\webapp_taint.mtf -Json
 }
 
+Invoke-Step "Call-graph adapter smoke test" {
+  $outDir = Join-Path $repoRoot "_build\acceptance"
+  New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+  $outPath = Join-Path $outDir "service_callgraph_imported.mtf"
+  python scripts\import_callgraph.py fixtures\adapters\service_callgraph.json -o $outPath
+  python scripts\analyze_model.py $outPath --json
+}
+
+Invoke-Step "Performance smoke test" {
+  python scripts\benchmark_analysis.py --hops 64
+}
+
 Invoke-Step "Required files" {
   $required = @(
     "README.md",
@@ -94,6 +106,9 @@ Invoke-Step "Required files" {
     "docs/competition/completion-report.md",
     "docs/competition/source-attribution.md",
     "scripts/analyze_model.ps1",
+    "scripts/analyze_model.py",
+    "scripts/import_callgraph.py",
+    "scripts/benchmark_analysis.py",
     "scripts/check_contributor_identity.ps1"
   )
   foreach ($path in $required) {
@@ -112,7 +127,7 @@ Invoke-Step "Tracked README mode" {
 }
 
 Invoke-Step "Contributor identities" {
-  powershell -ExecutionPolicy Bypass -File scripts\check_contributor_identity.ps1
+  powershell -ExecutionPolicy Bypass -File scripts\check_contributor_identity.ps1 -FailOnUnexpected
 }
 
 Invoke-Step "MoonBit source scale" {

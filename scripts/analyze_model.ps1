@@ -35,4 +35,3 @@ finally {
     Remove-Item Env:MOONTRUSTFLOW_SOURCE_LABEL -ErrorAction SilentlyContinue
   }
 }
-
