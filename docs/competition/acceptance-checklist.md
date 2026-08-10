@@ -57,8 +57,8 @@
 
 ## 远端完成标准
 
-- [x] GitLink 与 GitHub 指向同一最新提交 `b72c6d1`。
-- [x] GitHub Actions 三平台矩阵已补齐；native 结果待远程 Actions 完成后确认。
+- [x] GitLink 与 GitHub 指向同一最新提交 `361e97e`。
+- [x] GitHub Actions 三平台矩阵已补齐；run `31412283450` 的 Linux、macOS、Windows 均通过。
 - [x] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
 - [x] GitLink 与 GitHub 当前贡献者 API 均未发现 `python123` 或其他异常贡献者。
 - [x] 默认分支状态与验收材料一致：GitHub 为 `main`，GitLink 为 `master`。
