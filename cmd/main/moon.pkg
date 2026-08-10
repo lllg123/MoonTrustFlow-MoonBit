@@ -3,4 +3,6 @@ import {
   "lllg123/moontrustflow" @trustflow,
 }
 
-pkgtype(kind: "executable")
+options(
+  "is-main": true,
+)
