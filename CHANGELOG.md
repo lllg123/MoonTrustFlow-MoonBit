@@ -2,6 +2,9 @@
 
 ## 2026-08-11
 
+- Switched CI to the official MoonBit installer pinned to `0.10.3+16975d007`, ensuring the 0.10.3 core/prelude bundle is installed on Linux, macOS, and Windows runners.
+- Reduced push-triggered duplicate runs by checking the GitHub default branch (`main`); manual dispatch remains available.
+
 - Restored the MoonBit 0.10.3-compatible executable package declaration in `cmd/main/moon.pkg`.
 - Hardened CI with `--deny-warn`, explicit native compiler setup, workflow dispatch, and both default branch names.
 - Refreshed acceptance evidence with the official OSC2026 schedule, current 1166-line MoonBit scale, and current contributor/default-branch audits.

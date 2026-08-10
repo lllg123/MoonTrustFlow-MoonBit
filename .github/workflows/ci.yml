@@ -2,7 +2,7 @@ name: MoonTrustFlow CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -34,12 +34,21 @@ jobs:
         if: runner.os == 'macOS'
         run: xcode-select -p
 
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.22
-        with:
-          version: 0.10.3+16975d007
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup MoonBit (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          export MOONBIT_INSTALL_VERSION=0.10.3+16975d007
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Setup MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:MOONBIT_INSTALL_VERSION = "0.10.3+16975d007"
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          echo "$HOME\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Setup native compiler (Windows)
         if: runner.os == 'Windows'
