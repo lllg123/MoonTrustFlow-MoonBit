@@ -3,6 +3,7 @@
 ## 2026-08-11
 
 - Added a nine-fixture benchmark and boundary corpus with manifest-backed summary regression checks.
+- Mirrored the corpus and documentation updates across the GitHub and GitLink repository copies.
 - Added `CONTRIBUTING.md` and `NOTICE`, expanded acceptance documentation, and added edge tests for empty, disconnected, quoted, CRLF, comment, and default-severity inputs.
 - CI and `scripts/verify_acceptance.ps1` now execute the complete fixture corpus.
 - Switched CI to the official MoonBit installer pinned to `0.10.3+16975d007`, ensuring the 0.10.3 core/prelude bundle is installed on Linux, macOS, and Windows runners.
