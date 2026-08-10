@@ -1,2 +1,2 @@
 # Empty models are valid input and must produce an empty report.
-
+# The manifest asserts zero nodes, edges, policies, and findings.
