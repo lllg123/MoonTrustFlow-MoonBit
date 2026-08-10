@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-11
+
+- Restored the MoonBit 0.10.3-compatible executable package declaration in `cmd/main/moon.pkg`.
+- Hardened CI with `--deny-warn`, explicit native compiler setup, workflow dispatch, and both default branch names.
+- Refreshed acceptance evidence with the official OSC2026 schedule, current 1166-line MoonBit scale, and current contributor/default-branch audits.
+
 ## 2026-07-28
 
 - Updated `cmd/main/moon.pkg` to the current executable-package form while keeping `moon run cmd/main` cross-target friendly.

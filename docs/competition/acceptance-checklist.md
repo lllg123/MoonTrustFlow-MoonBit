@@ -1,8 +1,8 @@
 # MoonTrustFlow 验收清单
 
-更新时间：2026-07-10
+更新时间：2026-08-11
 
-本清单对应 2026-07-10 再次核对后的 OSC2026 公开页面与当前仓库实际状态。
+本清单对应 2026-08-11 再次核对后的 OSC2026 官方源码、两个远程仓库与当前工程状态。
 重点不再沿用早期“10-20 次提交”这样的旧口径，而是围绕公开开发、工程质量、
 可运行性、可维护性和 MoonBit 生态贡献进行自查。
 
@@ -15,7 +15,8 @@
 - [x] GitLink 仓库为 `https://www.gitlink.org.cn/lllglllg/MoonTrustFlow`。
 - [x] GitHub 仓库为 `https://github.com/lllg123/MoonTrustFlow-MoonBit`。
 - [x] Mooncakes 已发布并能通过公开 API 查询到 `llgllg/moontrustflow`。
-- [x] 当前公开赛程已按 `2026-07-13` 至 `2026-07-17` 的验收窗口更新到文档口径。
+- [x] 当前公开赛程已按官方源码更新：验收为 `2026-07-13` 至 `2026-07-17`，评选为
+      `2026-08-04` 至 `2026-08-14`，线下展示与颁奖为 `2026-08-16`。
 
 ## 当前实现能力
 
@@ -31,8 +32,8 @@
 
 ## 本地验证命令
 
-- [x] `moon check --target all`
-- [x] `moon test`
+- [x] `moon check --target all --deny-warn`
+- [x] `moon test --deny-warn`（无 C 编译器时跳过 native）
 - [x] `moon fmt` 后 `git diff --exit-code`
 - [x] `moon info` 后 `git diff --exit-code`
 - [x] `moon run cmd/main`
@@ -51,7 +52,7 @@
 - [x] 当前仓库已拆分为多文件核心实现，而非单文件演示。
 - [x] 当前仓库补充了复杂污染传播 fixture 与边界测试。
 - [x] 当前仓库补充了 `CHANGELOG.md`、来源说明和自查脚本。
-- [x] 当前跟踪的 `.mbt` / `.mbti` 代码规模已提升到约 `1026` 行。
+- [x] 当前跟踪的 `.mbt` / `.mbti` 代码规模为 `1166` 行。
 - [x] 公开提交历史、双远程和 Mooncakes 发布状态可核查。
 
 ## 远端完成标准

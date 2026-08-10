@@ -27,12 +27,12 @@ function Test-CommandExists {
 }
 
 function Get-TrackedMoonBitLineCount {
-  $files = rg --files -g "*.mbt" -g "*.mbti"
+  $files = rg --files -g "*.mbt" -g "*.mbti" -g "!_build/**" -g "!.mooncakes/**"
   if (-not $files) {
     return 0
   }
   return ($files | ForEach-Object {
-    (Get-Content -LiteralPath $_ -Encoding UTF8 | Measure-Object -Line).Lines
+    (Get-Content -LiteralPath $_ -Encoding UTF8).Count
   } | Measure-Object -Sum).Sum
 }
 
@@ -46,13 +46,13 @@ Invoke-Step "Toolchain" {
 }
 
 Invoke-Step "Static checks" {
-  moon check --target all
+  moon check --target all --deny-warn
 }
 
 Invoke-Step "Tests" {
-  moon test
+  moon test --deny-warn
   if (Test-CommandExists @("cl", "gcc", "clang", "cc")) {
-    moon test --target all
+    moon test --target all --deny-warn
   } else {
     Write-Warning "No system C compiler found. Skipping local native target test; CI must cover moon test --target all."
   }
@@ -137,8 +137,15 @@ Invoke-Step "MoonBit source scale" {
 
 if (-not $SkipRemote) {
   Invoke-Step "Remote HEAD checks" {
-    git ls-remote --symref origin HEAD
-    git ls-remote --symref github HEAD
+    $remotes = @(git remote)
+    foreach ($remote in @("origin", "github", "gitlink")) {
+      if ($remotes -contains $remote) {
+        Write-Host "[$remote]"
+        git ls-remote --symref $remote HEAD
+      } else {
+        Write-Host "[skip] remote '$remote' is not configured"
+      }
+    }
   }
 }
 

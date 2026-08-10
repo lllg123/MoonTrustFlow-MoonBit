@@ -2,7 +2,9 @@ name: MoonTrustFlow CI
 
 on:
   push:
+    branches: [main, master]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   verify:
@@ -15,10 +17,22 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: Setup native compiler (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y gcc
+
+      - name: Setup native compiler (macOS)
+        if: runner.os == 'macOS'
+        run: xcode-select -p
 
       - name: Setup MoonBit
         uses: hustcer/setup-moonbit@v1.22
@@ -27,16 +41,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup native compiler (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+
       - name: Verify toolchain
         run: |
           moon version --all
           moon update
 
       - name: Moon check
-        run: moon check --target all
+        run: moon check --target all --deny-warn
 
       - name: Moon test
-        run: moon test --target all
+        run: moon test --target all --deny-warn
 
       - name: Formatter cleanliness
         run: |

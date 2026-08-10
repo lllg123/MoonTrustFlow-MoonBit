@@ -70,12 +70,16 @@ moon add llgllg/moontrustflow
 Validate the repository locally:
 
 ```bash
-moon check --target all
-moon test
+moon check --target all --deny-warn
+moon test --deny-warn
 moon fmt
 moon info
 moon run cmd/main
 ```
+
+`moon test --target all --deny-warn` additionally exercises the native backend
+and therefore requires a system C compiler. The three-platform CI workflow
+installs the required compiler toolchains explicitly.
 
 Analyze a real `.mtf` fixture through the repository wrapper:
 
@@ -140,19 +144,21 @@ analysis flow.
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Tracked MoonBit source/interface scale on 2026-07-28: `1078` lines across `.mbt` and `.mbti`
+- Tracked MoonBit source/interface scale on 2026-08-11: `1166` lines across `.mbt` and `.mbti`
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
 - Mooncakes module: `llgllg/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
-- GitHub contributor API checked on `2026-07-28`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
-- Remote HEAD audit on `2026-07-28`: GitHub currently defaults to `main`, while GitLink currently defaults to `master`
+- GitHub contributor API checked on `2026-08-11`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
+- Remote HEAD audit on `2026-08-11`: GitHub defaults to `main`, while GitLink defaults to `master`
 
 ## OSC2026 Notes
 
-The official OSC2026 materials checked on **2026-07-28** still point to:
+The official OSC2026 materials checked on **2026-08-11** point to:
 
 - proposal and development window through **2026-07-12**
 - acceptance window **2026-07-13** to **2026-07-17**
+- final selection window **2026-08-04** to **2026-08-14**
+- offline showcase and awards ceremony on **2026-08-16**
 - a reference project scale signal of about **4~10k LOC**
 - emphasis on public development traces, clear documentation, runnable tests,
   maintainability, and ecosystem value
@@ -165,9 +171,14 @@ responds by making the implemented scope more concrete:
 - JSON output in addition to text output
 - cross-platform wrapper scripts, call-graph import, and benchmark smoke checks
 - contributor identity and acceptance self-check scripts
-- CI aligned to the MoonBit 0.10.3-compatible command set
+- CI aligned to the MoonBit 0.10.3-compatible command set, including strict
+  warning checks and native compiler setup
 
-Important toolchain note: on the current MoonBit 0.10.3 CLI, `moon fmt
+Important toolchain note: on MoonBit 0.10.3, `cmd/main/moon.pkg` must use
+`options("is-main": true)`. The newer `pkgtype(kind: "executable")` syntax is
+introduced in 0.10.4 and is intentionally not used here.
+
+On MoonBit 0.10.3, `moon fmt
 --deny-warn` and `moon info --deny-warn` are not accepted commands. This repo
 therefore uses the community-compatible validation pattern:
 

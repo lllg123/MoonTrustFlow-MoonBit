@@ -1,6 +1,6 @@
 # MoonTrustFlow 结项说明
 
-更新时间：2026-07-10
+更新时间：2026-08-11
 
 ## 1. 本轮整改目标
 
@@ -22,7 +22,8 @@
 
 - 新增多源/多汇、链式 sanitizer、路径例外、循环剪枝、分支汇合等复杂 fixture。
 - 扩充黑盒与白盒测试，补齐复杂污染传播与边界诊断场景。
-- 当前本地 `moon test` 已通过，`moon check --target all` 已通过。
+- 当前 MoonBit 0.10.3 本地 `moon check --target all --deny-warn` 已通过；Wasm、Wasm-GC
+  和 JS 三个目标的 16 个测试全部通过。native 目标由三平台 CI 覆盖。
 
 ### 2.3 真实 `.mtf` 输入能力
 
@@ -33,11 +34,11 @@
 
 ### 2.4 CI 与验收脚本
 
-- 重写 `.github/workflows/ci.yml` 为三平台矩阵。
+- 重写 `.github/workflows/ci.yml` 为三平台矩阵，并为 native 目标显式安装 C 编译器。
 - CI 明确包含：
   `moon update`
-  `moon check --target all`
-  `moon test --target all`
+  `moon check --target all --deny-warn`
+  `moon test --target all --deny-warn`
   `moon fmt` + `git diff --exit-code`
   `moon info` + `git diff --exit-code`
   `moon run cmd/main`
@@ -73,7 +74,7 @@
 - 更完整的边界测试；
 - 自查脚本、CHANGELOG、来源说明和双远程核查材料。
 
-当前跟踪的 `.mbt` / `.mbti` 规模约为 `1026` 行，后续若继续冲刺正式验收，
+当前跟踪的 `.mbt` / `.mbti` 规模为 `1166` 行，后续若继续冲刺正式展示，
 建议优先增加：
 
 - AST / 调用图适配入口；
