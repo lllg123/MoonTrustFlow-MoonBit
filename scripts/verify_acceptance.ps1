@@ -160,7 +160,7 @@ if (-not $SkipRemote) {
 
 if (-not $SkipMooncakes) {
   Invoke-Step "Mooncakes visibility" {
-    Invoke-RestMethod -Uri "https://mooncakes.io/api/v0/modules/llgllg/moontrustflow" | ConvertTo-Json -Depth 4
+    Invoke-RestMethod -Uri "https://mooncakes.io/api/v0/modules/lllg123/moontrustflow" | ConvertTo-Json -Depth 4
   }
 }
 

@@ -9,9 +9,9 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "llgllg/moontrustflow"
+name = "lllg123/moontrustflow"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.md"
 

@@ -2,6 +2,8 @@
 
 ## 2026-08-11
 
+- Prepared Mooncakes release `lllg123/moontrustflow@0.1.1` under the active GitHub/Mooncakes account.
+- Migrated the published module namespace from the legacy `llgllg/moontrustflow` identity to the authenticated `lllg123/moontrustflow` identity without rewriting history.
 - Added a nine-fixture benchmark and boundary corpus with manifest-backed summary regression checks.
 - Mirrored the corpus and documentation updates across the GitHub and GitLink repository copies.
 - Added `CONTRIBUTING.md` and `NOTICE`, expanded acceptance documentation, and added edge tests for empty, disconnected, quoted, CRLF, comment, and default-severity inputs.

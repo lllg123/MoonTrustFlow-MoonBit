@@ -64,7 +64,7 @@ allow request_body -> api_gateway -> escape_html -> render_html "encoded respons
 Install the package from Mooncakes:
 
 ```bash
-moon add llgllg/moontrustflow
+moon add lllg123/moontrustflow
 ```
 
 Validate the repository locally:
@@ -159,7 +159,7 @@ analysis flow.
 - Tracked MoonBit source/interface scale on 2026-08-11: `1220` lines across `.mbt` and `.mbti`
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
 - The deterministic fixture corpus contains 9 representative models with expected summaries and boundary cases
-- Mooncakes module: `llgllg/moontrustflow`
+- Mooncakes module: `lllg123/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
 - Contribution and license notices: `CONTRIBUTING.md`, `LICENSE`, and `NOTICE`
 - GitHub contributor API checked on `2026-08-11`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
@@ -203,7 +203,7 @@ validation pattern:
 
 - GitLink: <https://www.gitlink.org.cn/lllglllg/MoonTrustFlow>
 - GitHub: <https://github.com/lllg123/MoonTrustFlow-MoonBit>
-- Mooncakes: <https://mooncakes.io/modules/llgllg/moontrustflow>
+- Mooncakes: <https://mooncakes.io/modules/lllg123/moontrustflow>
 
 ## Competition Materials
 

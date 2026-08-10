@@ -15,13 +15,13 @@ GitHub:  https://github.com/lllg123/MoonTrustFlow-MoonBit
 目标 Mooncakes 模块名：
 
 ```text
-llgllg/moontrustflow
+lllg123/moontrustflow
 ```
 
 当前公开查询建议优先使用 Mooncakes API：
 
 ```text
-https://mooncakes.io/api/v0/modules/llgllg/moontrustflow
+https://mooncakes.io/api/v0/modules/lllg123/moontrustflow
 ```
 
 ## 竞赛材料

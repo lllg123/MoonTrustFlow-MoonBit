@@ -15,7 +15,7 @@
 - [x] `LICENSE`、`NOTICE` 和 `CONTRIBUTING.md` 明确许可证、归属和可复现贡献流程。
 - [x] GitLink 仓库为 `https://www.gitlink.org.cn/lllglllg/MoonTrustFlow`。
 - [x] GitHub 仓库为 `https://github.com/lllg123/MoonTrustFlow-MoonBit`。
-- [x] Mooncakes 已发布并能通过公开 API 查询到 `llgllg/moontrustflow`。
+- [x] Mooncakes 发布命名空间统一为当前 GitHub/Mooncakes 账号 `lllg123/moontrustflow`，并能通过公开 API 查询。
 - [x] 当前公开赛程已按官方源码更新：验收为 `2026-07-13` 至 `2026-07-17`，评选为
       `2026-08-04` 至 `2026-08-14`，线下展示与颁奖为 `2026-08-16`。
 
