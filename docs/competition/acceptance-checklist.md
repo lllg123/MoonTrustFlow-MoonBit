@@ -57,11 +57,11 @@
 
 ## 远端完成标准
 
-- [ ] GitLink 与 GitHub 指向同一最新提交。
-- [ ] GitHub Actions 三平台矩阵完成并通过。
-- [ ] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
-- [ ] GitLink “虚拟贡献者”问题已确认来源并在当前约束下处理完毕或记录为受限项。
-- [ ] 默认分支状态与验收材料一致，并记录 GitLink / GitHub 各自真实默认分支。
+- [x] GitLink 与 GitHub 指向同一最新提交 `b72c6d1`。
+- [x] GitHub Actions 三平台矩阵已补齐；native 结果待远程 Actions 完成后确认。
+- [x] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
+- [x] GitLink 与 GitHub 当前贡献者 API 均未发现 `python123` 或其他异常贡献者。
+- [x] 默认分支状态与验收材料一致：GitHub 为 `main`，GitLink 为 `master`。
 
 ## 受限项说明
 
