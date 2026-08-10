@@ -70,6 +70,7 @@ moon add llgllg/moontrustflow
 Validate the repository locally:
 
 ```bash
+# MoonBit 0.10.3+16975d007
 moon check --target all --deny-warn
 moon test --deny-warn
 moon fmt
@@ -108,6 +109,17 @@ Run a lightweight performance smoke test:
 python scripts/benchmark_analysis.py --hops 64
 ```
 
+Run the full representative fixture and boundary corpus:
+
+```bash
+python scripts/verify_fixture_corpus.py
+```
+
+The corpus covers web-service security, message pipelines, call-graph
+adapters, branching, cycles, disconnected paths, quoted text, comments, and
+empty input. Expected node/edge/policy/finding summaries are versioned in
+`fixtures/benchmarks/manifest.json`.
+
 ## CLI Behavior
 
 `moon run cmd/main` always works with the embedded sample model.
@@ -144,10 +156,12 @@ analysis flow.
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Tracked MoonBit source/interface scale on 2026-08-11: `1166` lines across `.mbt` and `.mbti`
+- Tracked MoonBit source/interface scale on 2026-08-11: `1220` lines across `.mbt` and `.mbti`
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
+- The deterministic fixture corpus contains 9 representative models with expected summaries and boundary cases
 - Mooncakes module: `llgllg/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
+- Contribution and license notices: `CONTRIBUTING.md`, `LICENSE`, and `NOTICE`
 - GitHub contributor API checked on `2026-08-11`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
 - Remote HEAD audit on `2026-08-11`: GitHub defaults to `main`, while GitLink defaults to `master`
 
@@ -178,9 +192,9 @@ Important toolchain note: on MoonBit 0.10.3, `cmd/main/moon.pkg` must use
 `options("is-main": true)`. The newer `pkgtype(kind: "executable")` syntax is
 introduced in 0.10.4 and is intentionally not used here.
 
-On MoonBit 0.10.3, `moon fmt
---deny-warn` and `moon info --deny-warn` are not accepted commands. This repo
-therefore uses the community-compatible validation pattern:
+On MoonBit 0.10.3, `moon fmt --deny-warn` and `moon info --deny-warn` are not
+accepted commands. This repo therefore uses the community-compatible
+validation pattern:
 
 - `moon fmt` + `git diff --exit-code`
 - `moon info` + `git diff --exit-code`
@@ -198,8 +212,11 @@ therefore uses the community-compatible validation pattern:
 - [Source Attribution](docs/competition/source-attribution.md)
 - [Submission Guide](docs/competition/submission-guide.md)
 - [Proposal Archive](docs/competition/proposal.md)
+- [Benchmark and Boundary Corpus](docs/competition/benchmark-corpus.md)
+- [Contributing Guide](CONTRIBUTING.md)
 - [Proposal PDF](docs/competition/MoonTrustFlow项目申报书.pdf)
 
 ## License
 
-Apache-2.0
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for the license and
+attribution boundary.

@@ -44,6 +44,10 @@
   `moon run cmd/main`
 - 新增 `scripts/verify_acceptance.ps1`，把 README、LICENSE、CI、Mooncakes、默认分支、
   贡献者身份、源码规模和真实 fixture 分析都固定为可重复步骤。
+- 新增 `fixtures/benchmarks/manifest.json` 与 `scripts/verify_fixture_corpus.py`，
+  对 9 个代表性 web service、消息管线、call-graph、分支、循环、断开路径、转义和空模型
+  场景执行 CLI，并校验节点、边、策略和 finding 摘要。
+- 新增 `CONTRIBUTING.md` 与 `NOTICE`，明确可复现开发流程、Apache-2.0 归属边界和无第三方源码捆绑声明。
 
 ## 3. 与预验收意见的对应关系
 
@@ -74,13 +78,9 @@
 - 更完整的边界测试；
 - 自查脚本、CHANGELOG、来源说明和双远程核查材料。
 
-当前跟踪的 `.mbt` / `.mbti` 规模为 `1166` 行，后续若继续冲刺正式展示，
-建议优先增加：
-
-- AST / 调用图适配入口；
-- fixture 到报告的批处理能力；
-- 更明确的 service / namespace 分组策略；
-- 更系统的性能基准。
+当前跟踪的 `.mbt` / `.mbti` 规模为 `1220` 行。本轮已经补齐 fixture 到报告的批处理
+校验、代表性 web service / 消息管线场景和边界模型；后续仍可继续增加 AST / 调用图
+适配入口、更明确的 service / namespace 分组策略和更系统的性能基准。
 
 ## 4. 当前验证基线
 

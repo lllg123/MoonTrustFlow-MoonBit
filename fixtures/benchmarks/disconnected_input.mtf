@@ -1,0 +1,4 @@
+# A policy with no graph path must remain quiet and deterministic.
+source orphan_input "unconnected external input"
+sink unreachable_sink "unreachable side effect"
+deny orphan_input -> unreachable_sink severity=high "unreachable path should not produce a finding"

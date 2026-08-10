@@ -1,0 +1,14 @@
+MoonTrustFlow
+
+Copyright 2026 MoonTrustFlow contributors.
+
+This repository does not bundle third-party source code. Runtime dependencies
+are resolved by MoonBit package metadata and remain subject to their own
+licenses. The project source and documentation are provided under the Apache
+License, Version 2.0; see LICENSE.
+
+Project repository:
+https://github.com/lllg123/MoonTrustFlow-MoonBit
+
+Mooncakes module:
+https://mooncakes.io/modules/llgllg/moontrustflow

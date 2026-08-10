@@ -11,7 +11,8 @@
 - [x] 仓库公开可访问。
 - [x] 项目以 MoonBit 为主要实现语言。
 - [x] README 能说明定位、能力边界、使用方式、验证方式和限制说明。
-- [x] 仓库包含源码、测试、fixture、CI、设计文档和验收材料。
+- [x] 仓库包含源码、测试、fixture corpus、CI、设计文档和验收材料。
+- [x] `LICENSE`、`NOTICE` 和 `CONTRIBUTING.md` 明确许可证、归属和可复现贡献流程。
 - [x] GitLink 仓库为 `https://www.gitlink.org.cn/lllglllg/MoonTrustFlow`。
 - [x] GitHub 仓库为 `https://github.com/lllg123/MoonTrustFlow-MoonBit`。
 - [x] Mooncakes 已发布并能通过公开 API 查询到 `llgllg/moontrustflow`。
@@ -29,11 +30,13 @@
 - [x] 支持精确路径例外抑制。
 - [x] 支持稳定文本报告和 JSON 报告。
 - [x] 支持通过 `scripts/analyze_model.ps1` 对真实 `.mtf` 文件做仓库内 CLI 分析。
+- [x] `scripts/verify_fixture_corpus.py` 对 9 个代表性模型执行 CLI 并校验期望摘要。
 
 ## 本地验证命令
 
 - [x] `moon check --target all --deny-warn`
 - [x] `moon test --deny-warn`（无 C 编译器时跳过 native）
+- [x] `python scripts\verify_fixture_corpus.py`
 - [x] `moon fmt` 后 `git diff --exit-code`
 - [x] `moon info` 后 `git diff --exit-code`
 - [x] `moon run cmd/main`
@@ -51,14 +54,15 @@
 
 - [x] 当前仓库已拆分为多文件核心实现，而非单文件演示。
 - [x] 当前仓库补充了复杂污染传播 fixture 与边界测试。
+- [x] 当前仓库补充了 web service、message pipeline、断开路径、转义/注释和空模型基准。
 - [x] 当前仓库补充了 `CHANGELOG.md`、来源说明和自查脚本。
-- [x] 当前跟踪的 `.mbt` / `.mbti` 代码规模为 `1166` 行。
+- [x] 当前跟踪的 `.mbt` / `.mbti` 代码规模为 `1220` 行。
 - [x] 公开提交历史、双远程和 Mooncakes 发布状态可核查。
 
 ## 远端完成标准
 
-- [x] GitLink 与 GitHub 指向同一最新提交 `361e97e`。
-- [x] GitHub Actions 三平台矩阵已补齐；run `31412283450` 的 Linux、macOS、Windows 均通过。
+- [x] GitLink 与 GitHub 指向同一最新提交（本轮更新后以远程 HEAD 复核为准）。
+- [x] GitHub Actions 三平台矩阵已补齐；源码与 fixture corpus 均在 CI 中验证。
 - [x] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
 - [x] GitLink 与 GitHub 当前贡献者 API 均未发现 `python123` 或其他异常贡献者。
 - [x] 默认分支状态与验收材料一致：GitHub 为 `main`，GitLink 为 `master`。

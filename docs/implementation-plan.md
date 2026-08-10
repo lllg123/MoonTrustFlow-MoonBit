@@ -16,7 +16,8 @@ Implemented components:
 4. Text and JSON finding output.
 5. Complex fixture scenarios for branching, multi-sink, and cycle-pruning flows.
 6. Acceptance, contributor-identity, and repository verification scripts.
-7. Competition-facing documentation and CI workflow.
+7. A deterministic representative fixture corpus with expected summaries.
+8. Competition-facing documentation and CI workflow.
 
 ## Design Choices
 
@@ -27,12 +28,14 @@ Implemented components:
 
 ## Acceptance Baseline
 
-- `moon check --target all` completes cleanly.
-- `moon test` passes locally.
+- `moon check --target all --deny-warn` completes cleanly.
+- `moon test --deny-warn` passes locally; native is additionally covered in CI.
 - `moon fmt` produces no diff.
 - `moon info` produces no diff.
 - `moon run cmd/main` prints the embedded deterministic sample analysis.
 - `scripts/analyze_model.ps1` can analyze a real `.mtf` fixture and emit JSON.
+- `scripts/verify_fixture_corpus.py` validates all nine representative fixtures
+  against versioned node/edge/policy/finding summaries.
 - `scripts/verify_acceptance.ps1` checks required files, contributor identities, Mooncakes visibility, remote defaults, and tracked MoonBit source scale.
 
 ## Known Local Constraint
@@ -40,7 +43,7 @@ Implemented components:
 On this Windows machine, `moon test --target all` still depends on a system C
 compiler for the native target. The repository therefore treats:
 
-- local baseline: `moon test`
+- local baseline: `moon test --deny-warn`
 - CI baseline: `moon test --target all`
 
 This constraint is recorded rather than hidden.

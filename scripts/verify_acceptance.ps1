@@ -84,6 +84,10 @@ Invoke-Step "Real .mtf fixture via wrapper" {
   powershell -ExecutionPolicy Bypass -File scripts\analyze_model.ps1 -Path fixtures\models\webapp_taint.mtf -Json
 }
 
+Invoke-Step "Representative fixture corpus" {
+  python scripts\verify_fixture_corpus.py
+}
+
 Invoke-Step "Call-graph adapter smoke test" {
   $outDir = Join-Path $repoRoot "_build\acceptance"
   New-Item -ItemType Directory -Force -Path $outDir | Out-Null
@@ -101,6 +105,8 @@ Invoke-Step "Required files" {
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
+    "NOTICE",
+    "CONTRIBUTING.md",
     ".github/workflows/ci.yml",
     "docs/competition/acceptance-checklist.md",
     "docs/competition/completion-report.md",
@@ -109,6 +115,9 @@ Invoke-Step "Required files" {
     "scripts/analyze_model.py",
     "scripts/import_callgraph.py",
     "scripts/benchmark_analysis.py",
+    "scripts/verify_fixture_corpus.py",
+    "fixtures/benchmarks/manifest.json",
+    "docs/competition/benchmark-corpus.md",
     "scripts/check_contributor_identity.ps1"
   )
   foreach ($path in $required) {

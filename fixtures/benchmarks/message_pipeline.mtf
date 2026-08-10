@@ -1,0 +1,15 @@
+source webhook_payload "external webhook payload"
+boundary ingest_worker "message ingestion worker"
+sanitizer schema_validator "schema validation"
+sink outbound_webhook "downstream webhook"
+sink dead_letter_queue "dead-letter storage"
+
+edge webhook_payload -> ingest_worker "receive message"
+edge ingest_worker -> outbound_webhook "direct forwarding"
+edge ingest_worker -> schema_validator "validate message"
+edge schema_validator -> outbound_webhook "validated forwarding"
+edge ingest_worker -> dead_letter_queue "unreviewed persistence"
+
+require webhook_payload -> outbound_webhook through=schema_validator severity=high "forwarded messages must be validated"
+allow webhook_payload -> ingest_worker -> schema_validator -> outbound_webhook "reviewed validated forwarding"
+deny webhook_payload -> dead_letter_queue severity=medium "raw payloads must not be persisted"

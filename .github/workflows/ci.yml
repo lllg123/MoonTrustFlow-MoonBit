@@ -88,8 +88,17 @@ jobs:
         run: |
           python scripts/analyze_model.py fixtures/models/webapp_taint.mtf --json
 
+      - name: Fixture corpus validation (Unix)
+        if: runner.os != 'Windows'
+        run: python scripts/verify_fixture_corpus.py
+
       - name: Fixture JSON analysis (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           python scripts/analyze_model.py fixtures/models/webapp_taint.mtf --json
+
+      - name: Fixture corpus validation (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: python scripts/verify_fixture_corpus.py

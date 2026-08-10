@@ -1,0 +1,5 @@
+# Quoted text, escaped quotes, CRLF input, and trailing comments are parser boundaries.
+source api_body "quoted \"payload\"" # source description
+sink render_html "HTML renderer"
+edge api_body -> render_html "direct response" # unsafe branch
+deny api_body -> render_html severity=high "raw payload must not render"

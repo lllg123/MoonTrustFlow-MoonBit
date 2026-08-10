@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "description": "Deterministic representative trust-flow corpus; no third-party production data is bundled.",
+  "fixtures": [
+    {
+      "path": "fixtures/models/branching_flow.mtf",
+      "expected": {"node_count": 9, "edge_count": 11, "policy_count": 7, "finding_count": 4}
+    },
+    {
+      "path": "fixtures/models/cyclic_reviewed_flow.mtf",
+      "expected": {"node_count": 5, "edge_count": 6, "policy_count": 2, "finding_count": 1}
+    },
+    {
+      "path": "fixtures/models/service_callgraph_imported.mtf",
+      "expected": {"node_count": 4, "edge_count": 4, "policy_count": 3, "finding_count": 2}
+    },
+    {
+      "path": "fixtures/models/webapp_taint.mtf",
+      "expected": {"node_count": 6, "edge_count": 7, "policy_count": 4, "finding_count": 3}
+    },
+    {
+      "path": "fixtures/benchmarks/web_service_security.mtf",
+      "expected": {"node_count": 8, "edge_count": 10, "policy_count": 7, "finding_count": 4}
+    },
+    {
+      "path": "fixtures/benchmarks/message_pipeline.mtf",
+      "expected": {"node_count": 5, "edge_count": 5, "policy_count": 3, "finding_count": 2}
+    },
+    {
+      "path": "fixtures/benchmarks/disconnected_input.mtf",
+      "expected": {"node_count": 2, "edge_count": 0, "policy_count": 1, "finding_count": 0}
+    },
+    {
+      "path": "fixtures/benchmarks/comment_and_escape.mtf",
+      "expected": {"node_count": 2, "edge_count": 1, "policy_count": 1, "finding_count": 1}
+    },
+    {
+      "path": "fixtures/benchmarks/empty_model.mtf",
+      "expected": {"node_count": 0, "edge_count": 0, "policy_count": 0, "finding_count": 0}
+    }
+  ]
+}
