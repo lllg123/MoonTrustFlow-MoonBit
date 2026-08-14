@@ -1,8 +1,8 @@
 # MoonTrustFlow 验收清单
 
-更新时间：2026-08-11
+更新时间：2026-08-14
 
-本清单对应 2026-08-11 再次核对后的 OSC2026 官方源码、两个远程仓库与当前工程状态。
+本清单对应 2026-08-14 再次核对后的 OSC2026 官方源码、两个远程仓库与当前工程状态。
 重点不再沿用早期“10-20 次提交”这样的旧口径，而是围绕公开开发、工程质量、
 可运行性、可维护性和 MoonBit 生态贡献进行自查。
 
@@ -16,8 +16,7 @@
 - [x] GitLink 仓库为 `https://www.gitlink.org.cn/lllglllg/MoonTrustFlow`。
 - [x] GitHub 仓库为 `https://github.com/lllg123/MoonTrustFlow-MoonBit`。
 - [x] Mooncakes 发布命名空间统一为当前 GitHub/Mooncakes 账号 `lllg123/moontrustflow`，并能通过公开 API 查询。
-- [x] 当前公开赛程已按官方源码更新：验收为 `2026-07-13` 至 `2026-07-17`，评选为
-      `2026-08-04` 至 `2026-08-14`，线下展示与颁奖为 `2026-08-16`。
+- [x] 当前赛程与提交安排以官方 OSC2026 页面及组委会最新通知为准；本清单不固化可能过期的日期快照。
 
 ## 当前实现能力
 
@@ -61,7 +60,7 @@
 
 ## 远端完成标准
 
-- [x] GitLink 与 GitHub 指向同一最新提交（本轮更新后以远程 HEAD 复核为准）。
+- [x] GitLink 与 GitHub 的发布内容、验收材料和功能版本一致；两个平台因独立镜像提交可拥有不同 commit ID，已分别核验远程 HEAD。
 - [x] GitHub Actions 三平台矩阵已补齐；源码与 fixture corpus 均在 CI 中验证。
 - [x] GitLink / GitHub 首页标题、简介、README 首屏与仓库文档一致。
 - [x] GitLink 与 GitHub 当前贡献者 API 均未发现 `python123` 或其他异常贡献者。

@@ -156,26 +156,27 @@ analysis flow.
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Tracked MoonBit source/interface scale on 2026-08-11: `1220` lines across `.mbt` and `.mbti`
+- Tracked MoonBit source/interface scale on 2026-08-14: `1220` lines across `.mbt` and `.mbti`
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
 - The deterministic fixture corpus contains 9 representative models with expected summaries and boundary cases
 - Mooncakes module: `lllg123/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
 - Contribution and license notices: `CONTRIBUTING.md`, `LICENSE`, and `NOTICE`
-- GitHub contributor API checked on `2026-08-11`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
-- Remote HEAD audit on `2026-08-11`: GitHub defaults to `main`, while GitLink defaults to `master`
+- GitHub contributor API checked on `2026-08-14`: only `lllg123` is currently exposed as a public GitHub contributor login for the GitHub mirror
+- Remote HEAD audit on `2026-08-14`: GitHub defaults to `main`, while GitLink defaults to `master`
 
 ## OSC2026 Notes
 
-The official OSC2026 materials checked on **2026-08-11** point to:
+The official OSC2026 pages and committee notices are the source of truth for
+current dates, submission logistics, and acceptance arrangements. This
+repository records the durable engineering requirements rather than freezing a
+potentially outdated schedule snapshot:
 
-- proposal and development window through **2026-07-12**
-- acceptance window **2026-07-13** to **2026-07-17**
-- final selection window **2026-08-04** to **2026-08-14**
-- offline showcase and awards ceremony on **2026-08-16**
-- a reference project scale signal of about **4~10k LOC**
-- emphasis on public development traces, clear documentation, runnable tests,
-  maintainability, and ecosystem value
+- public development traces and complete commit history
+- clear project scope, documentation, usage instructions, and limitations
+- reproducible build/run commands and runnable tests
+- maintainable structure, boundary coverage, and ecosystem value
+- OSI-approved licensing and third-party attribution compliance
 
 MoonTrustFlow is still below that reference LOC band, so this repository now
 responds by making the implemented scope more concrete:

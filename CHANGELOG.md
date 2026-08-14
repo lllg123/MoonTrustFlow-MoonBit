@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-14
+
+- Re-ran the OSC2026 acceptance self-check against both remote repositories, MoonBit 0.10.3, the Mooncakes release, and the three-platform CI run.
+- Corrected stale schedule wording, synchronized the measured 20-test evidence, and clarified that mirrored repositories may have different commit IDs while retaining equivalent release content.
+
 ## 2026-08-11
 
 - Prepared Mooncakes release `lllg123/moontrustflow@0.1.1` under the active GitHub/Mooncakes account.
