@@ -85,10 +85,14 @@ jobs:
 
       - name: Application review modes
         run: |
-          moon run cmd/main -- --sarif | grep -q '"version": "2.1.0"'
-          moon run cmd/main -- --assessment | grep -q 'risk_score='
-          moon run cmd/main -- --graph | grep -q 'graph digest='
-          moon run cmd/main -- --contract | grep -q 'quality_gate\|contract='
+          moon run cmd/main -- --sarif > "$RUNNER_TEMP/moontrustflow-sarif.json"
+          grep -q '"version": "2.1.0"' "$RUNNER_TEMP/moontrustflow-sarif.json"
+          moon run cmd/main -- --assessment > "$RUNNER_TEMP/moontrustflow-assessment.txt"
+          grep -q 'risk_score=' "$RUNNER_TEMP/moontrustflow-assessment.txt"
+          moon run cmd/main -- --graph > "$RUNNER_TEMP/moontrustflow-graph.txt"
+          grep -q 'graph digest=' "$RUNNER_TEMP/moontrustflow-graph.txt"
+          moon run cmd/main -- --contract > "$RUNNER_TEMP/moontrustflow-contract.txt"
+          grep -Eq 'quality_gate|contract=' "$RUNNER_TEMP/moontrustflow-contract.txt"
 
       - name: Fixture JSON analysis (Unix)
         if: runner.os != 'Windows'
