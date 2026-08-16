@@ -30,6 +30,8 @@
 - [x] 支持稳定文本报告和 JSON 报告。
 - [x] 支持通过 `scripts/analyze_model.ps1` 对真实 `.mtf` 文件做仓库内 CLI 分析。
 - [x] `scripts/verify_fixture_corpus.py` 对 9 个代表性模型执行 CLI 并校验期望摘要。
+- [x] CLI 支持文本、JSON、SARIF、图摘要、风险评估和部署契约检查模式。
+- [x] 生产 MoonBit 源码规模为 `3048` 行（排除测试与生成接口），并由质量门禁、基线比较和批量分析 API 支撑真实应用流程。
 
 ## 本地验证命令
 
@@ -55,7 +57,7 @@
 - [x] 当前仓库补充了复杂污染传播 fixture 与边界测试。
 - [x] 当前仓库补充了 web service、message pipeline、断开路径、转义/注释和空模型基准。
 - [x] 当前仓库补充了 `CHANGELOG.md`、来源说明和自查脚本。
-- [x] 当前跟踪的 `.mbt` / `.mbti` 代码规模为 `1220` 行。
+- [x] 当前生产 `.mbt` 代码规模为 `3048` 行；测试 `.mbt` 规模为 `449` 行。
 - [x] 公开提交历史、双远程和 Mooncakes 发布状态可核查。
 
 ## 远端完成标准

@@ -8,33 +8,264 @@ import {
 // Values
 pub fn analyze(Model) -> Array[Finding]
 
+pub fn analyze_batch(Array[BatchInput]) -> BatchReport
+
 pub fn analyze_text(String) -> Result[Array[Finding], TrustFlowError]
+
+pub fn assess_model(Model) -> ModelAssessment
+
+pub fn assessment_json(ModelAssessment) -> String
+
+pub fn audit_policies(Model) -> PolicyAudit
+
+pub fn baseline_comparison_json(BaselineComparison) -> String
+
+pub fn baseline_count_by_severity(Array[BaselineFinding], String) -> Int
+
+pub fn baseline_fingerprint(Finding) -> String
+
+pub fn baseline_is_empty(Array[BaselineFinding]) -> Bool
+
+pub fn batch_has_failures(BatchReport) -> Bool
+
+pub fn batch_is_clean(BatchReport) -> Bool
+
+pub fn batch_item_for(BatchReport, String) -> BatchItem?
+
+pub fn batch_report_json(BatchReport) -> String
+
+pub fn batch_sources(BatchReport) -> Array[String]
+
+pub fn build_baseline(Array[Finding]) -> Array[BaselineFinding]
+
+pub fn compare_baseline(Array[BaselineFinding], Array[Finding]) -> BaselineComparison
+
+pub fn contract_is_release_ready(ContractReport) -> Bool
+
+pub fn contract_report_json(ContractReport) -> String
+
+pub fn count_explanations_by_priority(Array[FindingExplanation], String) -> Int
+
+pub fn default_model_contract() -> ModelContract
+
+pub fn default_path_query(String, String) -> PathQuery
+
+pub fn default_quality_gate_options() -> QualityGateOptions
+
+pub fn default_sarif_options() -> SarifOptions
 
 pub fn empty_model() -> Model
 
+pub fn evaluate_contract(Model, ModelContract) -> ContractReport
+
+pub fn explain_finding(Finding) -> FindingExplanation
+
+pub fn explain_findings(Array[Finding]) -> Array[FindingExplanation]
+
+pub fn explanation_has_action(FindingExplanation, String) -> Bool
+
+pub fn explanation_kind_name(ExplanationKind) -> String
+
+pub fn explanation_priority(FindingExplanation) -> String
+
+pub fn explanation_summary_line(Array[FindingExplanation]) -> String
+
+pub fn explanations_json(Array[Finding]) -> String
+
+pub fn export_graph(Model, GraphExportFormat) -> String
+
+pub fn export_graph_dot(Model) -> String
+
+pub fn export_graph_json(Model) -> String
+
+pub fn export_graph_text(Model) -> String
+
+pub fn find_nodes_by_text(Model, String) -> Array[Node]
+
+pub fn format_assessment(ModelAssessment) -> String
+
+pub fn format_baseline_comparison(BaselineComparison) -> String
+
+pub fn format_batch_report(BatchReport) -> String
+
+pub fn format_contract_report(ContractReport) -> String
+
 pub fn format_error(TrustFlowError) -> String
 
+pub fn format_explanation(FindingExplanation) -> String
+
+pub fn format_explanations(Array[Finding]) -> String
+
 pub fn format_finding(Finding) -> String
+
+pub fn format_path_summary(PathSummary) -> String
+
+pub fn format_policy_audit(PolicyAudit) -> String
+
+pub fn format_quality_gate(QualityGateResult) -> String
 
 pub fn format_report(Array[Finding]) -> String
 
 pub fn format_report_json(Array[Finding]) -> String
 
+pub fn format_sarif(Array[Finding]) -> String
+
+pub fn format_sarif_with_options(Array[Finding], SarifOptions) -> String
+
+pub fn graph_boundary_edges(Model) -> Array[Edge]
+
+pub fn graph_critical_nodes(Model) -> Array[String]
+
+pub fn graph_digest(Model) -> String
+
+pub fn graph_export(Model, String) -> GraphExport
+
+pub fn graph_node_names_by_kind(Model, NodeKind) -> Array[String]
+
+pub fn issue_kind_name(ModelIssueKind) -> String
+
+pub fn measure_model(Model) -> GraphMetrics
+
+pub fn merge_batch_reports(BatchReport, BatchReport) -> BatchReport
+
 pub fn node_kind_name(NodeKind) -> String
+
+pub fn nodes_for_policy(Model, Int) -> Array[String]
+
+pub fn normalize_severity(String) -> String
 
 pub fn parse_model(String) -> Result[Model, TrustFlowError]
 
+pub fn policy_audit_json(PolicyAudit) -> String
+
+pub fn policy_endpoint(Policy) -> String
+
+pub fn policy_endpoint_reachable(Model, Policy) -> Bool
+
+pub fn policy_is_executable(Model, Policy) -> Bool
+
+pub fn query_paths(Model, PathQuery) -> PathSummary
+
+pub fn query_paths_json(PathSummary) -> String
+
+pub fn query_policy_impact(Model, String) -> Array[Policy]
+
+pub fn query_reachable_nodes(Model, String) -> Array[String]
+
+pub fn query_source_sink_pairs(Model) -> Array[(String, String)]
+
+pub fn rank_node_impact(Model) -> Array[NodeImpact]
+
+pub fn risk_band_name(RiskBand) -> String
+
 pub fn rule_kind_name(RuleKind) -> String
 
+pub fn run_quality_gate(Model) -> QualityGateResult
+
+pub fn run_quality_gate_with_options(Model, QualityGateOptions) -> QualityGateResult
+
+pub fn run_workflow(String, Model) -> WorkflowRun
+
+pub fn run_workflow_text(String, String) -> Result[WorkflowRun, TrustFlowError]
+
 pub fn sample_model_text() -> String
+
+pub fn workflow_changed_since_baseline(Array[BaselineFinding], WorkflowRun) -> BaselineComparison
+
+pub fn workflow_is_release_ready(WorkflowRun) -> Bool
+
+pub fn workflow_json(WorkflowRun) -> String
 
 // Errors
 
 // Types and methods
+pub(all) struct BaselineComparison {
+  baseline_count : Int
+  current_count : Int
+  new_findings : Array[BaselineFinding]
+  resolved_findings : Array[BaselineFinding]
+  unchanged_findings : Array[BaselineFinding]
+  severity_regressions : Array[BaselineFinding]
+  passed : Bool
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct BaselineFinding {
+  fingerprint : String
+  rule : String
+  severity : String
+  source : String
+  sink : String
+  path : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct BatchInput {
+  source : String
+  text : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct BatchItem {
+  source : String
+  parsed : Bool
+  finding_count : Int
+  risk_score : Int
+  risk_band : String
+  error : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct BatchReport {
+  items : Array[BatchItem]
+  summary : BatchSummary
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct BatchSummary {
+  total_models : Int
+  parsed_models : Int
+  failed_models : Int
+  finding_count : Int
+  high_finding_count : Int
+  medium_finding_count : Int
+  low_finding_count : Int
+  average_risk_score : Int
+  maximum_risk_score : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct ContractCheck {
+  kind : ContractCheckKind
+  name : String
+  passed : Bool
+  observed : String
+  expected : String
+  detail : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) enum ContractCheckKind {
+  RequiredNode
+  MinimumGraphSize
+  RequiredPolicy
+  RequiredControlPoint
+  Reachability
+  SeverityContract
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct ContractReport {
+  contract : String
+  passed : Bool
+  checks : Array[ContractCheck]
+  passed_count : Int
+  failed_count : Int
+} derive(Eq, ToJson, @debug.Debug)
+
 pub(all) struct Edge {
   from : String
   to : String
   label : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) enum ExplanationKind {
+  ForbiddenRoute
+  MissingSanitizer
+  ReviewedException
+  UnknownRule
 } derive(Eq, ToJson, @debug.Debug)
 
 pub(all) struct Finding {
@@ -47,16 +278,120 @@ pub(all) struct Finding {
   suggestion : String
 } derive(Eq, ToJson, @debug.Debug)
 
+pub(all) struct FindingExplanation {
+  kind : ExplanationKind
+  title : String
+  summary : String
+  affected_path : String
+  risk : String
+  actions : Array[RemediationAction]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct GraphEdgeRecord {
+  from : String
+  to : String
+  label : String
+  boundary_crossing : Bool
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct GraphExport {
+  format : String
+  nodes : Array[GraphNodeRecord]
+  edges : Array[GraphEdgeRecord]
+  digest : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) enum GraphExportFormat {
+  GraphJson
+  GraphDot
+  GraphText
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct GraphMetrics {
+  node_count : Int
+  edge_count : Int
+  source_count : Int
+  sink_count : Int
+  sanitizer_count : Int
+  boundary_count : Int
+  policy_count : Int
+  reachable_source_count : Int
+  reachable_sink_count : Int
+  max_out_degree : Int
+  max_in_degree : Int
+  connected_component_count : Int
+  cycle_hint_count : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct GraphNodeRecord {
+  id : String
+  kind : String
+  description : String
+  incoming : Int
+  outgoing : Int
+  source_reachable : Bool
+  sink_reachable : Bool
+} derive(Eq, ToJson, @debug.Debug)
+
 pub(all) struct Model {
   nodes : Array[Node]
   edges : Array[Edge]
   policies : Array[Policy]
 } derive(Eq, ToJson, @debug.Debug)
 
+pub(all) struct ModelAssessment {
+  metrics : GraphMetrics
+  coverage : PolicyCoverage
+  issues : Array[ModelIssue]
+  risk_score : Int
+  risk_band : RiskBand
+  recommendation_count : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct ModelContract {
+  name : String
+  required_node_kinds : Array[String]
+  minimum_nodes : Int
+  minimum_edges : Int
+  required_policy_kinds : Array[String]
+  required_control_points : Array[String]
+  minimum_severity : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct ModelIssue {
+  kind : ModelIssueKind
+  subject : String
+  detail : String
+  severity : String
+  recommendation : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) enum ModelIssueKind {
+  EmptyModel
+  OrphanNode
+  MissingSource
+  MissingSink
+  BrokenEdge
+  UnreachableSink
+  UnusedPolicy
+  InvalidSeverity
+  DuplicatePolicy
+} derive(Eq, ToJson, @debug.Debug)
+
 pub(all) struct Node {
   name : String
   kind : NodeKind
   description : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct NodeImpact {
+  node : String
+  kind : String
+  paths_from_sources : Int
+  paths_to_sinks : Int
+  policy_count : Int
+  is_control_point : Bool
+  impact_score : Int
 } derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum NodeKind {
@@ -67,6 +402,24 @@ pub(all) enum NodeKind {
   Normal
 } derive(Eq, ToJson, @debug.Debug)
 
+pub(all) struct PathQuery {
+  source : String
+  sink : String
+  include_allowed : Bool
+  maximum_paths : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct PathSummary {
+  source : String
+  sink : String
+  path_count : Int
+  allowed_count : Int
+  unsafe_count : Int
+  shortest_length : Int
+  longest_length : Int
+  paths : Array[Array[String]]
+} derive(Eq, ToJson, @debug.Debug)
+
 pub(all) struct Policy {
   kind : RuleKind
   path : Array[String]
@@ -75,15 +428,148 @@ pub(all) struct Policy {
   description : String
 } derive(Eq, ToJson, @debug.Debug)
 
+pub(all) struct PolicyAudit {
+  items : Array[PolicyAuditItem]
+  total : Int
+  executable : Int
+  unreachable_count : Int
+  duplicates : Int
+  high_risk : Int
+  coverage_percent : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct PolicyAuditItem {
+  index : Int
+  kind : String
+  endpoint : String
+  severity : String
+  reachable : Bool
+  executable : Bool
+  duplicate : Bool
+  advice : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct PolicyCoverage {
+  allow_count : Int
+  deny_count : Int
+  require_count : Int
+  covered_policy_count : Int
+  reachable_policy_count : Int
+  high_severity_count : Int
+  medium_severity_count : Int
+  low_severity_count : Int
+  coverage_percent : Int
+} derive(Eq, ToJson, @debug.Debug)
+
 pub(all) struct Position {
   line : Int
   column : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct QualityGateOptions {
+  minimum_coverage_percent : Int
+  maximum_risk_score : Int
+  reject_unreachable_policies : Bool
+  reject_invalid_severity : Bool
+  require_source_and_sink : Bool
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct QualityGateResult {
+  passed : Bool
+  reasons : Array[String]
+  assessment : ModelAssessment
+  policy_audit : PolicyAudit
+  finding_count : Int
+  high_finding_count : Int
+  checked_source_sink_pairs : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct RemediationAction {
+  title : String
+  command : String
+  rationale : String
+  priority : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) enum RiskBand {
+  Low
+  Guarded
+  High
+  Critical
 } derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum RuleKind {
   Allow
   Deny
   Require
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifArtifactLocation {
+  uri : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifDriver {
+  name : String
+  version : String
+  information_uri : String
+  rules : Array[SarifRule]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifLocation {
+  artifact_location : SarifArtifactLocation
+  logical_regions : Array[SarifRegion]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifMessage {
+  text : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifOptions {
+  tool_name : String
+  tool_version : String
+  repository_uri : String
+  include_help : Bool
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifRegion {
+  start_line : Int
+  start_column : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifReport {
+  version : String
+  schema : String
+  runs : Array[SarifRun]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifResult {
+  rule_id : String
+  level : String
+  message : SarifMessage
+  locations : Array[SarifLocation]
+  fingerprints : Map[String, String]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifRule {
+  id : String
+  name : String
+  short_description : String
+  help_uri : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifRun {
+  tool : SarifToolWrapper
+  results : Array[SarifResult]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifTool {
+  name : String
+  version : String
+  information_uri : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SarifToolWrapper {
+  driver : SarifDriver
 } derive(Eq, ToJson, @debug.Debug)
 
 pub(all) enum TrustFlowError {
@@ -94,6 +580,16 @@ pub(all) enum TrustFlowError {
   MissingPathNode(Position)
   MissingThrough(Position)
   UnterminatedQuote(Position)
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct WorkflowRun {
+  source : String
+  model : Model
+  findings : Array[Finding]
+  assessment : ModelAssessment
+  policy_audit : PolicyAudit
+  quality_gate : QualityGateResult
+  sarif : String
 } derive(Eq, ToJson, @debug.Debug)
 
 // Type aliases

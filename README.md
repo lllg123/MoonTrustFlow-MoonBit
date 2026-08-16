@@ -24,6 +24,10 @@ later accept AST, call-graph, or architecture-adapter inputs.
 - Evaluate `deny`, `require through=`, and exact-path `allow` policies.
 - Report complex scenarios including multi-sink, branching, and cycle-pruned paths.
 - Emit both plain-text and JSON findings.
+- Emit SARIF 2.1.0 findings for GitHub code-scanning and security review pipelines.
+- Produce graph exports, node-impact rankings, policy audits, risk assessments, and deployment contracts.
+- Compare findings against a versioned baseline to distinguish new, resolved, and regressed risks.
+- Analyze multiple models in one deterministic batch report.
 - Drive real fixture analysis through repository scripts without changing the core package target surface.
 - Import a lightweight call-graph JSON description into `.mtf` for adapter-oriented experiments.
 - Run a repeatable performance smoke test over generated larger trust-flow graphs.
@@ -136,6 +140,15 @@ Add `--json` or `-j` to emit structured output:
 moon run cmd/main -- --json
 ```
 
+The CLI also exposes application-facing review modes:
+
+```bash
+moon run cmd/main -- --sarif       # SARIF 2.1.0 for security tooling
+moon run cmd/main -- --assessment  # risk score, graph metrics, and remediation issues
+moon run cmd/main -- --graph       # human-readable graph and boundary summary
+moon run cmd/main -- --contract    # deployment-time model contract gate
+```
+
 For real files, use the wrapper script shown above. This keeps the core package
 cross-target friendly while still providing a practical repository CLI for
 actual `.mtf` inputs.
@@ -156,9 +169,11 @@ analysis flow.
 
 - Main implementation language: MoonBit
 - License: Apache-2.0
-- Tracked MoonBit source/interface scale on 2026-08-14: `1220` lines across `.mbt` and `.mbti`
+- Application-valued MoonBit implementation scale on 2026-08-16: `3048` production lines across `.mbt` files, excluding tests and generated interfaces
+- Test implementation scale: `449` lines, with 26 tests passing on each Wasm, Wasm-GC, and JS target
 - Fixture coverage includes branching, cycle-pruning, multi-sink, and reviewed-exception scenarios
 - The deterministic fixture corpus contains 9 representative models with expected summaries and boundary cases
+- Application modules include risk metrics, policy audits, graph queries/exports, SARIF, batch analysis, baselines, quality gates, and model contracts
 - Mooncakes module: `lllg123/moontrustflow`
 - CI workflow: `.github/workflows/ci.yml`
 - Contribution and license notices: `CONTRIBUTING.md`, `LICENSE`, and `NOTICE`

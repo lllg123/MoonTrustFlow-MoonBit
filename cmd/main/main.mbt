@@ -47,6 +47,16 @@ fn parse_cli_json_flag(args : Array[String]) -> Bool {
 }
 
 ///|
+fn parse_cli_flag(args : Array[String], name : String) -> Bool {
+  for arg in args {
+    if arg == name {
+      return true
+    }
+  }
+  false
+}
+
+///|
 fn select_model_input() -> (String, String) {
   match @env.get_env_var("MOONTRUSTFLOW_MODEL_TEXT") {
     Some(model_text) if model_text != "" =>
@@ -65,10 +75,22 @@ fn select_model_input() -> (String, String) {
 fn report_from_model(
   source_label : String,
   model : @trustflow.Model,
-  as_json : Bool,
+  mode : String,
 ) -> Unit {
   let findings = @trustflow.analyze(model)
-  if as_json {
+  if mode == "sarif" {
+    println(@trustflow.format_sarif(findings))
+  } else if mode == "assessment" {
+    println(@trustflow.format_assessment(@trustflow.assess_model(model)))
+  } else if mode == "graph" {
+    println(@trustflow.export_graph_text(model))
+  } else if mode == "contract" {
+    println(
+      @trustflow.format_contract_report(
+        @trustflow.evaluate_contract(model, @trustflow.default_model_contract()),
+      ),
+    )
+  } else if mode == "json" {
     render_json_report(source_label, model, findings)
   } else {
     render_text_report(source_label, model, findings)
@@ -77,13 +99,26 @@ fn report_from_model(
 
 ///|
 fn main {
-  let as_json = parse_cli_json_flag(@env.args())
+  let args = @env.args()
+  let mode = if parse_cli_flag(args, "--sarif") {
+    "sarif"
+  } else if parse_cli_flag(args, "--assessment") {
+    "assessment"
+  } else if parse_cli_flag(args, "--graph") {
+    "graph"
+  } else if parse_cli_flag(args, "--contract") {
+    "contract"
+  } else if parse_cli_json_flag(args) {
+    "json"
+  } else {
+    "text"
+  }
   let (model_text, source_label) = select_model_input()
   match @trustflow.parse_model(model_text) {
-    Ok(model) => report_from_model(source_label, model, as_json)
+    Ok(model) => report_from_model(source_label, model, mode)
     Err(err) => {
       let message = @trustflow.format_error(err)
-      if as_json {
+      if mode == "json" || mode == "sarif" {
         println(
           { "error": message, "source": source_label }
           .to_json()

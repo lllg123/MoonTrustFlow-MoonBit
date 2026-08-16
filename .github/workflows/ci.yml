@@ -83,6 +83,13 @@ jobs:
       - name: Embedded sample run
         run: moon run cmd/main
 
+      - name: Application review modes
+        run: |
+          moon run cmd/main -- --sarif | grep -q '"version": "2.1.0"'
+          moon run cmd/main -- --assessment | grep -q 'risk_score='
+          moon run cmd/main -- --graph | grep -q 'graph digest='
+          moon run cmd/main -- --contract | grep -q 'quality_gate\|contract='
+
       - name: Fixture JSON analysis (Unix)
         if: runner.os != 'Windows'
         run: |
